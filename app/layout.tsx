@@ -24,6 +24,9 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: [siteConfig.defaultOgImage],
   },
+  verification: {
+    google: "nnZOnE-nRF5XZWdO793cucqroUHigjINOpqUMMuZdEg",
+  },
   robots: { index: true, follow: true },
   alternates: { canonical: siteConfig.url },
 }
@@ -31,6 +34,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <meta name="google-site-verification" content="nnZOnE-nRF5XZWdO793cucqroUHigjINOpqUMMuZdEg" />
+      </head>
       <body className="min-h-screen flex flex-col">
         <header className="border-b border-sand-200 bg-sand-50 sticky top-0 z-10">
           <div className="max-w-3xl mx-auto px-4 py-4 flex items-center justify-between">
