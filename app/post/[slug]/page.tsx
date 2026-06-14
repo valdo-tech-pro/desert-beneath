@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase-server'
 import { Post } from '@/lib/types'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import DisqusComments from '@/components/DisqusComments'
 import { Metadata } from 'next'
 import { siteConfig } from '@/lib/site-config'
 
@@ -148,6 +149,7 @@ export default async function PostPage({
         className="prose-content"
         dangerouslySetInnerHTML={{ __html: typedPost.content }}
       />
+      <DisqusComments slug={typedPost.slug} title={typedPost.title} />
     </article>
   )
 }
