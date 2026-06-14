@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #fbf8f3;
+  color: #4a3622;
+}
+
+.prose-content h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  color: #2c5631;
+}
+
+.prose-content h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #356a3b;
+}
+
+.prose-content p {
+  margin-bottom: 1rem;
+  line-height: 1.75;
+}
+
+.prose-content ul,
+.prose-content ol {
+  margin-bottom: 1rem;
+  margin-left: 1.5rem;
+}
+
+.prose-content ul {
+  list-style-type: disc;
+}
+
+.prose-content ol {
+  list-style-type: decimal;
+}
+
+.prose-content a {
+  color: #356a3b;
+  text-decoration: underline;
+}
+
+.prose-content img {
+  border-radius: 0.5rem;
+  margin: 1.5rem 0;
+}
