@@ -5,16 +5,20 @@ import { useEffect } from 'react'
 export default function DisqusComments({ slug, title }: { slug: string; title: string }) {
   useEffect(() => {
     const d = window.document
-    const s = d.createElement('script')
-    s.src = 'https://the-desert-beneath.disqus.com/embed.js'
-    s.setAttribute('data-timestamp', String(+new Date()))
-    ;(d.head || d.body).appendChild(s)
-
+    
+    // 1. Define configuration BEFORE appending the script so Disqus reads it correctly
+    // @ts-ignore
     window.disqus_config = function () {
       this.page.url = `https://desert-beneath-zeta.vercel.app/post/${slug}`
       this.page.identifier = slug
       this.page.title = title
     }
+
+    // 2. Create and append the Disqus embed script
+    const s = d.createElement('script')
+    s.src = 'https://the-desert-beneath.disqus.com/embed.js'
+    s.setAttribute('data-timestamp', String(+new Date()))
+    ;(d.head || d.body).appendChild(s)
 
     return () => {
       const disqusThread = d.getElementById('disqus_thread')
@@ -28,4 +32,5 @@ export default function DisqusComments({ slug, title }: { slug: string; title: s
       <div id="disqus_thread" />
     </div>
   )
-}
+      }
+      
