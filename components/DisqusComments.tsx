@@ -11,11 +11,10 @@ export default function DisqusComments({ slug, title }: { slug: string; title: s
       this.page.url = `https://desert-beneath-zeta.vercel.app/post/${slug}`
       this.page.identifier = slug
       this.page.title = title
-    }
+    }			
 
     const s = d.createElement('script')
-    s.src = 'https://the-desert-beneath.disqus.com/embed.js'
-    s.setAttribute('data-timestamp', String(+new Date()))
+    s.src = 'https://desert-beneath.disqus.com/embed.js'    s.setAttribute('data-timestamp', String(+new Date()))
     ;(d.head || d.body).appendChild(s)
 
     return () => {
