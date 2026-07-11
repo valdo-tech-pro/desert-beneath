@@ -14,7 +14,8 @@ export default function DisqusComments({ slug, title }: { slug: string; title: s
     }			
 
     const s = d.createElement('script')
-    s.src = 'https://desert-beneath.disqus.com/embed.js'    s.setAttribute('data-timestamp', String(+new Date()))
+    s.src = 'https://desert-beneath.disqus.com/embed.js'   
+      s.setAttribute('data-timestamp', String(+new Date()))
     ;(d.head || d.body).appendChild(s)
 
     return () => {
