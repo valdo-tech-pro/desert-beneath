@@ -1,4 +1,4 @@
-       import Link from 'next/link'
+import Link from 'next/link'
 
 export default function BookPage() {
   return (
@@ -8,23 +8,44 @@ export default function BookPage() {
         <h1 className="text-4xl sm:text-5xl font-bold text-[#2c241b] mb-4">
           The Desert Beneath
         </h1>
-        <p className="text-xl text-[#5c5046] mb-8 max-w-2xl mx-auto">
+        <p className="text-xl text-[#5c5046] mb-6 max-w-2xl mx-auto">
           The definitive guide to cactus cultivation, soil science, and unlocking the secrets of desert plants.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        
+        {/* Price Display */}
+        <p className="text-3xl font-bold text-[#2c5631] mb-8">
+          $7.99 <span className="text-lg font-normal text-[#5c5046]">USD</span>
+        </p>
+        
+        {/* Call-to-Action Buttons with Real Links */}
+        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
           <a 
-            href="#" 
-            className="bg-[#c85a3a] hover:bg-[#a8482c] text-white text-lg font-semibold px-8 py-4 rounded-md transition-colors text-center"
+            href="https://selar.com/e829s1lr46"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#c85a3a] hover:bg-[#a8482c] text-white text-lg font-semibold px-8 py-4 rounded-md transition-colors text-center flex items-center justify-center gap-2 shadow-sm"
           >
-            Get Your Copy &ndash; $7.99
+            <span>Buy on Selar</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
           </a>
-          <Link 
-            href="/https://a.co/d/00D6jXd1" 
-            className="border-2 border-[#2c5631] text-[#2c5631] hover:bg-[#2c5631] hover:text-white text-lg font-semibold px-8 py-4 rounded-md transition-colors text-center"
+          
+          <a 
+            href="https://a.co/d/00D6jXd1"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#2c5631] hover:bg-[#1e3d22] text-white text-lg font-semibold px-8 py-4 rounded-md transition-colors text-center flex items-center justify-center gap-2 shadow-sm"
           >
-            Read Free Chapter
-          </Link>
+            <span>Buy on Amazon</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </a>
         </div>
+        
+        <Link 
+          href="/" 
+          className="inline-block text-[#5c5046] hover:text-[#2c5631] font-medium transition-colors"
+        >
+          Or read a free chapter on the homepage &rarr;
+        </Link>
       </div>
 
       {/* What's Inside */}
@@ -71,4 +92,4 @@ export default function BookPage() {
       </div>
     </div>
   )
-}
+}     
