@@ -19,7 +19,7 @@ export default function BookPage() {
             Get Your Copy &ndash; $7.99
           </a>
           <Link 
-            href="/" 
+            href="/https://a.co/d/00D6jXd1" 
             className="border-2 border-[#2c5631] text-[#2c5631] hover:bg-[#2c5631] hover:text-white text-lg font-semibold px-8 py-4 rounded-md transition-colors text-center"
           >
             Read Free Chapter
