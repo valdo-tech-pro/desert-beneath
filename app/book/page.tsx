@@ -1,4 +1,4 @@
-import Link from 'next/link'
+       import Link from 'next/link'
 
 export default function BookPage() {
   return (
@@ -13,10 +13,10 @@ export default function BookPage() {
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a 
-            href="#" // TODO: Replace with your actual Gumroad, Amazon, or Shopify link
+            href="#" 
             className="bg-[#c85a3a] hover:bg-[#a8482c] text-white text-lg font-semibold px-8 py-4 rounded-md transition-colors text-center"
           >
-            Get Your Copy – $19.99
+            Get Your Copy &ndash; $19.99
           </a>
           <Link 
             href="/" 
@@ -42,7 +42,7 @@ export default function BookPage() {
             <span className="text-2xl">💧</span>
             <div>
               <h3 className="font-bold text-[#2c241b]">The Truth About Watering</h3>
-              <p className="text-[#5c5046] text-sm">Ditch the "once a week" myth. Discover seasonal watering schedules based on dormancy.</p>
+              <p className="text-[#5c5046] text-sm">Ditch the &ldquo;once a week&rdquo; myth. Discover seasonal watering schedules based on dormancy.</p>
             </div>
           </div>
           <div className="flex gap-4">
@@ -65,9 +65,9 @@ export default function BookPage() {
       {/* Testimonial */}
       <div className="text-center mb-12">
         <blockquote className="text-xl italic text-[#5c5046] max-w-2xl mx-auto mb-4">
-          "This book finally explained why my golden barrel was rotting. The soil recipes alone are worth 10x the price. A must-read for any serious collector!"
+          &ldquo;This book finally explained why my golden barrel was rotting. The soil recipes alone are worth 10x the price. A must-read for any serious collector!&rdquo;
         </blockquote>
-        <p className="font-semibold text-[#2c241b]">— Sarah M., Master Gardener</p>
+        <p className="font-semibold text-[#2c241b]">&mdash; Sarah M., Master Gardener</p>
       </div>
     </div>
   )
