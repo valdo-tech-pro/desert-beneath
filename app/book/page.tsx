@@ -16,7 +16,7 @@ export default function BookPage() {
             href="#" 
             className="bg-[#c85a3a] hover:bg-[#a8482c] text-white text-lg font-semibold px-8 py-4 rounded-md transition-colors text-center"
           >
-            Get Your Copy &ndash; $19.99
+            Get Your Copy &ndash; $7.99
           </a>
           <Link 
             href="/" 
