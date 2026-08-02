@@ -31,7 +31,7 @@ export default function NewsletterSignup() {
         
         {status === 'success' ? (
           <div className="bg-[#2c5631] text-white p-4 rounded-md font-medium">
-            🌵 You're subscribed! Check your inbox for your free chapter.
+            🌵 {"You're"} subscribed! Check your inbox for your free chapter.
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
