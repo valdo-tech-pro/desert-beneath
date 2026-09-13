@@ -14,17 +14,25 @@ export default function AdminLoginPage() {
     setLoading(true)
     setError('')
 
-    const res = await fetch('/api/admin-login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password }),
-    })
+    try {
+      const res = await fetch('/api/admin-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      })
 
-    if (res.ok) {
-      router.push('/admin')
-      router.refresh()
-    } else {
-      setError('Incorrect password')
+      const data = await res.json().catch(() => ({}))
+
+      if (res.ok && data.success) {
+        router.push('/admin')
+        router.refresh()
+        return
+      }
+
+      setError(data.error || 'Unable to sign in. Please try again.')
+    } catch {
+      setError('Unable to reach the admin login service. Please check your connection and try again.')
+    } finally {
       setLoading(false)
     }
   }
@@ -42,8 +50,9 @@ export default function AdminLoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           className="w-full border border-sand-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cactus-400"
           required
+          autoComplete="current-password"
         />
-        {error && <p className="text-red-600 text-sm">{error}</p>}
+        {error && <p className="text-red-600 text-sm" role="alert">{error}</p>}
         <button
           type="submit"
           disabled={loading}
