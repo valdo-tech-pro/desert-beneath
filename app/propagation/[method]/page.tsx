@@ -67,14 +67,16 @@ export function generateStaticParams() {
   return Object.keys(guides).map((method) => ({ method }))
 }
 
-export async function generateMetadata({ params }: { params: { method: string } }): Promise<Metadata> {
-  const guide = guides[params.method as Method]
+export async function generateMetadata({ params }: { params: Promise<{ method: string }> }): Promise<Metadata> {
+  const { method } = await params
+  const guide = guides[method as Method]
   if (!guide) return {}
   return { title: guide.title, description: guide.description }
 }
 
-export default function PropagationGuidePage({ params }: { params: { method: string } }) {
-  const guide = guides[params.method as Method]
+export default async function PropagationGuidePage({ params }: { params: Promise<{ method: string }> }) {
+  const { method } = await params
+  const guide = guides[method as Method]
   if (!guide) notFound()
 
   return (

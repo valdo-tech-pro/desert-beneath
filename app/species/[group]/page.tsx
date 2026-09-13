@@ -134,8 +134,9 @@ export function generateStaticParams() {
   return Object.keys(groups).map((group) => ({ group }))
 }
 
-export async function generateMetadata({ params }: { params: { group: string } }): Promise<Metadata> {
-  const guide = groups[params.group as GroupKey]
+export async function generateMetadata({ params }: { params: Promise<{ group: string }> }): Promise<Metadata> {
+  const { group } = await params
+  const guide = groups[group as GroupKey]
   if (!guide) return { title: 'Cactus Species Guide' }
   return {
     title: `${guide.name} Cactus Care Guide`,
@@ -143,8 +144,9 @@ export async function generateMetadata({ params }: { params: { group: string } }
   }
 }
 
-export default function SpeciesGuidePage({ params }: { params: { group: string } }) {
-  const guide = groups[params.group as GroupKey]
+export default async function SpeciesGuidePage({ params }: { params: Promise<{ group: string }> }) {
+  const { group } = await params
+  const guide = groups[group as GroupKey]
   if (!guide) notFound()
 
   const sections = [
@@ -157,7 +159,7 @@ export default function SpeciesGuidePage({ params }: { params: { group: string }
     ['Propagation', guide.propagation],
   ] as const
 
-  const individualSpecies = speciesByGroup[params.group as keyof typeof speciesByGroup] ?? []
+  const individualSpecies = speciesByGroup[group as keyof typeof speciesByGroup] ?? []
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -194,7 +196,7 @@ export default function SpeciesGuidePage({ params }: { params: { group: string }
         <p className="mt-3 max-w-2xl leading-7 text-sand-700">Explore individual species for more specific identification, habitat, mature size, flowering, and propagation notes.</p>
         <div className="mt-7 grid gap-4 sm:grid-cols-2">
           {individualSpecies.map(([name, slug, common]) => (
-            <Link key={slug} href={`/species/${params.group}/${slug}`} className="rounded-2xl border border-sand-200 bg-sand-100 p-5 transition hover:-translate-y-0.5 hover:border-cactus-300 hover:shadow-sm">
+            <Link key={slug} href={`/species/${group}/${slug}`} className="rounded-2xl border border-sand-200 bg-sand-100 p-5 transition hover:-translate-y-0.5 hover:border-cactus-300 hover:shadow-sm">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-cactus-600">Species profile</p>
               <h3 className="mt-2 font-serif text-xl font-bold text-cactus-800">{name}</h3>
               <p className="mt-1 text-sm text-sand-600">{common}</p>

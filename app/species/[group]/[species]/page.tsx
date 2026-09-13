@@ -222,18 +222,20 @@ export function generateStaticParams() {
   })
 }
 
-export async function generateMetadata({ params }: { params: { group: string; species: string } }): Promise<Metadata> {
-  const item = species[params.species as SpeciesKey]
-  if (!item || item.group !== params.group) return { title: 'Cactus Species Guide' }
+export async function generateMetadata({ params }: { params: Promise<{ group: string; species: string }> }): Promise<Metadata> {
+  const { group, species: speciesSlug } = await params
+  const item = species[speciesSlug as SpeciesKey]
+  if (!item || item.group !== group) return { title: 'Cactus Species Guide' }
   return {
     title: `${item.name} Care Guide | The Desert Beneath`,
     description: `${item.name} (${item.common}) identification, habitat, size, flowering, light, watering, soil, problems, and propagation guide.`,
   }
 }
 
-export default function IndividualSpeciesPage({ params }: { params: { group: string; species: string } }) {
-  const item = species[params.species as SpeciesKey]
-  if (!item || item.group !== params.group) notFound()
+export default async function IndividualSpeciesPage({ params }: { params: Promise<{ group: string; species: string }> }) {
+  const { group, species: speciesSlug } = await params
+  const item = species[speciesSlug as SpeciesKey]
+  if (!item || item.group !== group) notFound()
 
   const sections = [
     ['Identification', item.identification],
