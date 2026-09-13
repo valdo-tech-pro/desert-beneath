@@ -67,13 +67,15 @@ export function generateStaticParams() {
   return Object.keys(problems).map((problem) => ({ problem }))
 }
 
-export async function generateMetadata({ params }: { params: { problem: string } }): Promise<Metadata> {
-  const guide = problems[params.problem as ProblemKey]
+export async function generateMetadata({ params }: { params: Promise<{ problem: string }> }): Promise<Metadata> {
+  const { problem } = await params
+  const guide = problems[problem as ProblemKey]
   return guide ? { title: guide.title, description: guide.symptom } : { title: 'Cactus Problem Diagnosis' }
 }
 
-export default function ProblemPage({ params }: { params: { problem: string } }) {
-  const guide = problems[params.problem as ProblemKey]
+export default async function ProblemPage({ params }: { params: Promise<{ problem: string }> }) {
+  const { problem } = await params
+  const guide = problems[problem as ProblemKey]
   if (!guide) notFound()
 
   return (
