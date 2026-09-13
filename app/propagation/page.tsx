@@ -3,14 +3,14 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Cactus Propagation Guide',
-  description: 'Learn practical methods for propagating cacti from cuttings, offsets, and seed.',
+  description: 'Learn practical methods for propagating cacti from cuttings, offsets, seed, and grafting.',
 }
 
 const methods = [
-  ['Cuttings', 'Allow suitable cuttings to form a properly dried callus before planting into an appropriate, well-draining medium.'],
-  ['Offsets', 'Separate naturally produced offsets carefully and give damaged surfaces time to dry before potting.'],
-  ['Seeds', 'Seed propagation is slower but opens the door to growing a wider range of species and observing plants from the beginning.'],
-  ['Grafting', 'Grafting can be useful for particular plants and advanced projects, but it requires clean technique and compatible partners.'],
+  ['Cuttings', 'cuttings', 'Allow suitable cuttings to form a properly dried callus before planting into an appropriate, well-draining medium.'],
+  ['Offsets', 'offsets', 'Separate naturally produced offsets carefully and give damaged surfaces time to dry before potting.'],
+  ['Seeds', 'seeds', 'Seed propagation is slower but opens the door to growing a wider range of species and observing plants from the beginning.'],
+  ['Grafting', 'grafting', 'Grafting can be useful for particular plants and advanced projects, but it requires clean technique and compatible partners.'],
 ]
 
 export default function PropagationPage() {
@@ -25,7 +25,7 @@ export default function PropagationPage() {
       <section className="py-14">
         <div className="mb-8"><p className="text-xs font-bold uppercase tracking-[0.2em] text-cactus-600">Choose your method</p><h2 className="mt-2 font-serif text-3xl font-bold text-cactus-800">Four ways to propagate</h2></div>
         <div className="grid gap-5 sm:grid-cols-2">
-          {methods.map(([title, description]) => <article key={title} className="rounded-2xl border border-sand-200 bg-white p-6 shadow-sm"><h3 className="font-serif text-2xl font-bold text-cactus-800">{title}</h3><p className="mt-3 leading-7 text-sand-700">{description}</p><Link href="/#latest" className="mt-5 inline-block text-sm font-bold text-cactus-700 hover:text-cactus-600">Explore cactus guides →</Link></article>)}
+          {methods.map(([title, slug, description]) => <article key={title} className="rounded-2xl border border-sand-200 bg-white p-6 shadow-sm"><h3 className="font-serif text-2xl font-bold text-cactus-800">{title}</h3><p className="mt-3 leading-7 text-sand-700">{description}</p><Link href={`/propagation/${slug}`} className="mt-5 inline-block text-sm font-bold text-cactus-700 hover:text-cactus-600">Read the guide →</Link></article>)}
         </div>
       </section>
 
