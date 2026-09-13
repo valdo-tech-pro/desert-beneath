@@ -15,7 +15,10 @@ export async function POST(req: NextRequest) {
   const current = attempts.get(key)
 
   if (current && current.resetAt > now && current.count >= MAX_ATTEMPTS) {
-    return NextResponse.json({ success: false, error: 'Too many attempts. Try again later.' }, { status: 429 })
+    return NextResponse.json(
+      { success: false, error: 'Too many attempts. Try again later.', code: 'RATE_LIMITED' },
+      { status: 429 }
+    )
   }
 
   try {
@@ -23,13 +26,30 @@ export async function POST(req: NextRequest) {
     const password = typeof body?.password === 'string' ? body.password : ''
 
     if (password.length === 0 || password.length > 256) {
-      return NextResponse.json({ success: false }, { status: 401 })
+      return NextResponse.json(
+        { success: false, error: 'Please enter your admin password.', code: 'INVALID_PASSWORD' },
+        { status: 401 }
+      )
     }
 
-    if (password === process.env.ADMIN_PASSWORD) {
+    if (password !== process.env.ADMIN_PASSWORD) {
+      const next = current && current.resetAt > now
+        ? { count: current.count + 1, resetAt: current.resetAt }
+        : { count: 1, resetAt: now + WINDOW_MS }
+      attempts.set(key, next)
+
+      return NextResponse.json(
+        { success: false, error: 'The admin password is incorrect.', code: 'INVALID_CREDENTIALS' },
+        { status: 401 }
+      )
+    }
+
+    try {
+      const session = createAdminSession()
       attempts.delete(key)
+
       const res = NextResponse.json({ success: true })
-      res.cookies.set('admin_auth', createAdminSession(), {
+      res.cookies.set('admin_auth', session, {
         httpOnly: true,
         secure: true,
         sameSite: 'strict',
@@ -37,15 +57,17 @@ export async function POST(req: NextRequest) {
         path: '/',
       })
       return res
+    } catch (error) {
+      console.error('Admin session configuration error:', error)
+      return NextResponse.json(
+        { success: false, error: 'Admin login is temporarily unavailable. Please check the production authentication settings.', code: 'AUTH_CONFIG_ERROR' },
+        { status: 503 }
+      )
     }
-
-    const next = current && current.resetAt > now
-      ? { count: current.count + 1, resetAt: current.resetAt }
-      : { count: 1, resetAt: now + WINDOW_MS }
-    attempts.set(key, next)
-
-    return NextResponse.json({ success: false }, { status: 401 })
   } catch {
-    return NextResponse.json({ success: false }, { status: 400 })
+    return NextResponse.json(
+      { success: false, error: 'Invalid login request.', code: 'INVALID_REQUEST' },
+      { status: 400 }
+    )
   }
 }
