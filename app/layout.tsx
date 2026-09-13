@@ -13,7 +13,6 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image', title: `${siteConfig.name} | Cactus Care & Cultivation`, description: siteConfig.description, images: [siteConfig.defaultOgImage] },
   verification: { google: 'nnZOnE-nRF5XZWdO793cucqroUHigjINOpqUMMuZdEg' },
   robots: { index: true, follow: true },
-  alternates: { canonical: siteConfig.url },
 }
 
 const navItems = [
