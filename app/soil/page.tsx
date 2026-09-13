@@ -7,12 +7,12 @@ export const metadata: Metadata = {
 }
 
 const topics = [
-  ['Drainage', 'Good drainage helps excess water move away from the root zone instead of remaining around roots for too long.'],
-  ['Mineral structure', 'Mineral particles create pore spaces and physical structure. The right balance depends on species and growing conditions.'],
-  ['Organic matter', 'Organic ingredients can hold moisture and nutrients, but too much for a particular setup can keep the root zone wet longer than intended.'],
-  ['Pot choice', 'A suitable pot should match the plant, root system, climate, watering habits, and drainage needs.'],
-  ['Repotting', 'Repot when the plant and root system need it, using a clean container and a mix suited to the growing environment.'],
-  ['Watering the mix', 'A good soil mix is only half the equation. Watering frequency should respond to drying speed, season, temperature, light, and species.'],
+  ['Drainage', 'drainage', 'Good drainage helps excess water move away from the root zone instead of remaining around roots for too long.'],
+  ['Mineral structure', 'mineral-structure', 'Mineral particles create pore spaces and physical structure. The right balance depends on species and growing conditions.'],
+  ['Organic matter', 'organic-matter', 'Organic ingredients can hold moisture and nutrients, but too much for a particular setup can keep the root zone wet longer than intended.'],
+  ['Pot choice', 'pot-choice', 'A suitable pot should match the plant, root system, climate, watering habits, and drainage needs.'],
+  ['Repotting', 'repotting', 'Repot when the plant and root system need it, using a clean container and a mix suited to the growing environment.'],
+  ['Watering the mix', 'watering', 'A good soil mix is only half the equation. Watering frequency should respond to drying speed, season, temperature, light, and species.'],
 ]
 
 export default function SoilPage() {
@@ -25,16 +25,16 @@ export default function SoilPage() {
       </section>
 
       <section className="py-14">
-        <div className="mb-8"><p className="text-xs font-bold uppercase tracking-[0.2em] text-cactus-600">The fundamentals</p><h2 className="mt-2 font-serif text-3xl font-bold text-cactus-800">What makes a useful cactus mix?</h2></div>
+        <div className="mb-8"><p className="text-xs font-bold uppercase tracking-[0.2em] text-cactus-600">The fundamentals</p><h2 className="mt-2 font-serif text-3xl font-bold text-cactus-800">What makes a useful cactus mix?</h2><p className="mt-3 max-w-2xl leading-7 text-sand-700">Choose a topic below to go deeper into the decisions that affect roots, moisture, and drying speed.</p></div>
         <div className="grid gap-5 sm:grid-cols-2">
-          {topics.map(([title, description]) => <article key={title} className="rounded-2xl border border-sand-200 bg-white p-6 shadow-sm"><h3 className="font-serif text-2xl font-bold text-cactus-800">{title}</h3><p className="mt-3 leading-7 text-sand-700">{description}</p></article>)}
+          {topics.map(([title, slug, description]) => <article key={slug} className="rounded-2xl border border-sand-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"><h3 className="font-serif text-2xl font-bold text-cactus-800">{title}</h3><p className="mt-3 leading-7 text-sand-700">{description}</p><Link href={`/soil/${slug}`} className="mt-5 inline-flex text-sm font-bold text-cactus-700 hover:text-cactus-800">Read the {title.toLowerCase()} guide →</Link></article>)}
         </div>
       </section>
 
       <section className="mb-14 rounded-3xl border border-sand-200 bg-sand-100 p-7 sm:p-10">
         <h2 className="font-serif text-2xl font-bold text-cactus-800">There is no universal cactus soil recipe</h2>
         <p className="mt-3 max-w-2xl leading-7 text-sand-700">A mix that dries quickly in a humid climate may behave very differently indoors or in a dry, hot environment. Start with the plant and your conditions, then adjust the mix around how quickly it dries.</p>
-        <Link href="/#start-here" className="mt-6 inline-flex rounded-xl bg-cactus-700 px-5 py-3 font-bold text-white hover:bg-cactus-800">Learn the care basics →</Link>
+        <div className="mt-6 flex flex-wrap gap-3"><Link href="/problems" className="rounded-xl border border-sand-300 bg-white px-5 py-3 font-bold text-cactus-800 hover:border-cactus-300">Diagnose root problems →</Link><Link href="/#start-here" className="rounded-xl bg-cactus-700 px-5 py-3 font-bold text-white hover:bg-cactus-800">Learn the care basics →</Link></div>
       </section>
     </div>
   )
