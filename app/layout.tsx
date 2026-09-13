@@ -1,5 +1,4 @@
-
-    import type { Metadata } from 'next'
+import type { Metadata } from 'next'
 import './globals.css'
 import Link from 'next/link'
 import GoogleAnalytics from '@/app/GoogleAnalytics'
@@ -28,7 +27,7 @@ export const metadata: Metadata = {
     images: [siteConfig.defaultOgImage],
   },
   verification: {
-    google: "nnZOnE-nRF5XZWdO793cucqroUHigjINOpqUMMuZdEg",
+    google: 'nnZOnE-nRF5XZWdO793cucqroUHigjINOpqUMMuZdEg',
   },
   robots: { index: true, follow: true },
   alternates: { canonical: siteConfig.url },
@@ -39,18 +38,45 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="bg-[#fbf8f3] text-[#4a3622] min-h-screen flex flex-col font-sans">
         <GoogleAnalytics />
-        
-        {/* --- Navigation Header --- */}
-        <header className="border-b border-[#e6dccf] bg-[#fbf8f3]/95 backdrop-blur-sm sticky top-0 z-50">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 flex justify-between items-center">
-            <Link href="/" className="text-xl font-bold text-[#2c5631] hover:text-[#356a3b] transition-colors">
-              🌵 {siteConfig.name}
+
+        {/* --- Site Header --- */}
+        <header className="sticky top-0 z-50 border-b border-[#e6dccf] bg-[#fbf8f3]/95 shadow-sm backdrop-blur-md">
+          <div className="mx-auto flex min-h-[72px] max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+            <Link
+              href="/"
+              className="group flex min-w-0 items-center gap-2.5"
+              aria-label={`${siteConfig.name} home`}
+            >
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2c5631] text-lg shadow-sm transition-transform group-hover:-rotate-6">
+                🌵
+              </span>
+              <span className="truncate text-base font-extrabold tracking-tight text-[#2c5631] sm:text-lg">
+                {siteConfig.name}
+              </span>
             </Link>
-            <nav className="flex gap-6 items-center text-sm font-medium">
-              <Link href="/" className="hover:text-[#2c5631] transition-colors">Home</Link>
-              <Link href="/book" className="hover:text-[#2c5631] transition-colors">The Book</Link>              <Link 
-                href="/book" 
-                className="bg-[#c85a3a] hover:bg-[#a8482c] text-white px-4 py-2 rounded-md transition-colors"
+
+            <nav aria-label="Main navigation" className="flex items-center gap-1.5 sm:gap-2">
+              <Link
+                href="/"
+                className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#5f4b38] transition-colors hover:bg-[#efe6da] hover:text-[#2c5631] sm:px-3"
+              >
+                Home
+              </Link>
+              <Link
+                href="/#start-here"
+                className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-[#5f4b38] transition-colors hover:bg-[#efe6da] hover:text-[#2c5631] sm:block"
+              >
+                Start Here
+              </Link>
+              <Link
+                href="/contact"
+                className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-[#5f4b38] transition-colors hover:bg-[#efe6da] hover:text-[#2c5631] md:block"
+              >
+                Contact
+              </Link>
+              <Link
+                href="/book"
+                className="rounded-lg bg-[#c85a3a] px-3.5 py-2 text-sm font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[#a8482c] hover:shadow-md sm:px-4"
               >
                 Get the Book
               </Link>
@@ -59,43 +85,69 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </header>
 
         {/* --- Main Content --- */}
-        <main className="flex-grow max-w-5xl mx-auto px-4 sm:px-6 py-8 w-full">
+        <main className="flex-grow mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
           {children}
         </main>
 
         {/* --- Newsletter Section --- */}
         <NewsletterSignup />
 
-        {/* --- Footer --- */}
-        <footer className="bg-[#2c241b] text-[#f0e6d8] py-12 mt-12">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-lg font-bold text-white mb-3">{siteConfig.name}</h3>
-              <p className="text-[#a89f95] text-sm leading-relaxed max-w-xs">
-                Cultivating resilience, one pot at a time. Expert guides for the modern cactus enthusiast.
-              </p>
+        {/* --- Site Footer --- */}
+        <footer className="mt-12 bg-[#2c241b] text-[#f0e6d8]">
+          <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+            <div className="grid grid-cols-1 gap-10 md:grid-cols-[1.5fr_1fr_1fr]">
+              <div>
+                <Link href="/" className="inline-flex items-center gap-2 text-lg font-extrabold text-white">
+                  <span>🌵</span>
+                  <span>{siteConfig.name}</span>
+                </Link>
+                <p className="mt-4 max-w-md text-sm leading-7 text-[#b8aea3]">
+                  Practical cactus care, soil science, propagation, and growing guidance — helping you understand what is happening beneath the surface.
+                </p>
+                <Link
+                  href="/book"
+                  className="mt-5 inline-flex items-center rounded-lg border border-[#6b5848] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:border-[#c85a3a] hover:bg-[#3a2f25]"
+                >
+                  Explore the Cactus Guide →
+                </Link>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#d6c8b8]">Explore</h3>
+                <ul className="mt-4 space-y-3 text-sm text-[#b8aea3]">
+                  <li><Link href="/" className="transition-colors hover:text-white">Home</Link></li>
+                  <li><Link href="/#start-here" className="transition-colors hover:text-white">Start Here</Link></li>
+                  <li><Link href="/book" className="transition-colors hover:text-white">The Book</Link></li>
+                  <li><Link href="/contact" className="transition-colors hover:text-white">Contact</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#d6c8b8]">Stay Connected</h3>
+                <p className="mt-4 text-sm leading-6 text-[#b8aea3]">
+                  Get practical cactus tips and new guides delivered to your inbox.
+                </p>
+                <Link
+                  href="/#newsletter"
+                  className="mt-4 inline-flex text-sm font-bold text-white underline decoration-[#c85a3a] decoration-2 underline-offset-4 hover:text-[#f3d5c8]"
+                >
+                  Join the newsletter
+                </Link>
+                <h3 className="mt-7 text-xs font-bold uppercase tracking-[0.18em] text-[#d6c8b8]">Legal</h3>
+                <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-[#b8aea3]">
+                  <Link href="/privacy" className="transition-colors hover:text-white">Privacy</Link>
+                  <Link href="/terms" className="transition-colors hover:text-white">Terms</Link>
+                </div>
+              </div>
             </div>
-            <div>
-              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-3">Explore</h4>
-              <ul className="space-y-2 text-sm text-[#a89f95]">
-                <li><Link href="/" className="hover:text-white transition-colors">Home</Link></li>
-                <li><Link href="/book" className="hover:text-white transition-colors">The Book</Link></li>
-                <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-              </ul>
+
+            <div className="mt-10 flex flex-col gap-3 border-t border-[#463a30] pt-6 text-xs text-[#887d73] sm:flex-row sm:items-center sm:justify-between">
+              <p>&copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</p>
+              <p>Grow from the roots up.</p>
             </div>
-            <div>
-              <h4 className="text-sm font-semibold text-white uppercase tracking-wider mb-3">Legal</h4>
-              <ul className="space-y-2 text-sm text-[#a89f95]">
-                <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
-                <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 mt-8 pt-8 border-t border-[#3d342b] text-center text-sm text-[#7a7068]">
-            &copy; {new Date().getFullYear()} {siteConfig.name}. All rights reserved.
           </div>
         </footer>
       </body>
     </html>
-  )}
-           
+  )
+}
