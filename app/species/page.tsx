@@ -7,14 +7,14 @@ export const metadata: Metadata = {
 }
 
 const groups = [
-  ['Mammillaria', 'Compact, varied cacti with distinctive tubercles and often impressive flowers.'],
-  ['Astrophytum', 'Star-shaped cacti known for sculptural forms, ribs, and careful watering needs.'],
-  ['Echinocactus', 'Globular barrel cacti with strong ribs and a classic desert-cactus form.'],
-  ['Echinopsis', 'Fast-growing cacti famous for spectacular, often short-lived flowers.'],
-  ['Opuntia', 'Prickly pears and relatives with flattened pads and distinctive growth habits.'],
-  ['Ferocactus', 'Large ribbed barrel cacti with strong spines and excellent light requirements.'],
-  ['Gymnocalycium', 'Small globular cacti valued for their shapes, ribs, and flowers.'],
-  ['Cereus', 'Columnar cacti suited to growers interested in dramatic upright growth.'],
+  ['Mammillaria', 'mammillaria', 'Compact, varied cacti with distinctive tubercles and often impressive flowers.'],
+  ['Astrophytum', 'astrophytum', 'Star-shaped cacti known for sculptural forms, ribs, and distinctive markings.'],
+  ['Echinocactus', 'echinocactus', 'Globular barrel cacti with strong ribs and a classic desert-cactus form.'],
+  ['Echinopsis', 'echinopsis', 'Fast-growing cacti famous for spectacular, often short-lived flowers.'],
+  ['Opuntia', 'opuntia', 'Prickly pears and relatives with flattened pads and distinctive growth habits.'],
+  ['Ferocactus', 'ferocactus', 'Large ribbed barrel cacti with strong spines and excellent light requirements.'],
+  ['Gymnocalycium', 'gymnocalycium', 'Small globular cacti valued for their shapes, ribs, and flowers.'],
+  ['Cereus', 'cereus', 'Columnar cacti suited to growers interested in dramatic upright growth.'],
 ]
 
 export default function SpeciesPage() {
@@ -30,14 +30,15 @@ export default function SpeciesPage() {
         <div className="mb-8">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-cactus-600">Explore by group</p>
           <h2 className="mt-2 font-serif text-3xl font-bold text-cactus-800">Popular cactus families & groups</h2>
+          <p className="mt-3 max-w-2xl leading-7 text-sand-700">Open a guide for practical starting points on light, watering, soil, drainage, and common warning signs.</p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
-          {groups.map(([name, description]) => (
-            <article key={name} className="rounded-2xl border border-sand-200 bg-white p-6 shadow-sm">
+          {groups.map(([name, slug, description]) => (
+            <article key={slug} className="rounded-2xl border border-sand-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-cactus-600">Species guide</p>
               <h3 className="mt-3 font-serif text-2xl font-bold text-cactus-800">{name}</h3>
               <p className="mt-2 leading-7 text-sand-700">{description}</p>
-              <span className="mt-5 inline-block text-sm font-bold text-sand-500">Detailed guides coming soon →</span>
+              <Link href={`/species/${slug}`} className="mt-5 inline-flex text-sm font-bold text-cactus-700 hover:text-cactus-800">Explore the {name} guide →</Link>
             </article>
           ))}
         </div>
