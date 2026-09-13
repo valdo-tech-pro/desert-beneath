@@ -3,10 +3,9 @@ import { createAdminClient } from '@/lib/supabase-admin'
 import { isAdminAuthenticated } from '@/lib/auth'
 import { validatePostInput } from '@/lib/post-validation'
 
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+type RouteContext = { params: Promise<{ id: string }> }
+
+export async function PUT(req: NextRequest, { params }: RouteContext) {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
@@ -16,6 +15,7 @@ export async function PUT(
     const validationError = validatePostInput(body)
     if (validationError) return NextResponse.json({ error: validationError }, { status: 400 })
 
+    const { id } = await params
     const { title, slug, excerpt, meta_description, content, cover_image, published } = body
     const supabase = createAdminClient()
     const { data, error } = await supabase
@@ -30,7 +30,7 @@ export async function PUT(
         published: !!published,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', params.id)
+      .eq('id', id)
       .select()
       .single()
 
@@ -44,16 +44,14 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(_req: NextRequest, { params }: RouteContext) {
   if (!(await isAdminAuthenticated())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const { id } = await params
   const supabase = createAdminClient()
-  const { error } = await supabase.from('posts').delete().eq('id', params.id)
+  const { error } = await supabase.from('posts').delete().eq('id', id)
 
   if (error) {
     return NextResponse.json({ error: 'Unable to delete post' }, { status: 500 })
