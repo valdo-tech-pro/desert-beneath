@@ -44,6 +44,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/book" className="rounded-lg bg-[#c85a3a] px-3.5 py-2 text-sm font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[#a8482c] hover:shadow-md sm:px-4">Book</Link>
             </nav>
           </div>
+
+          <nav aria-label="Cactus categories" className="border-t border-[#e6dccf] lg:hidden">
+            <div className="mx-auto flex max-w-6xl gap-1.5 overflow-x-auto px-4 py-2.5 sm:px-6" style={{ scrollbarWidth: 'none' }}>
+              {navItems.map(([label, href]) => (
+                <Link
+                  key={`mobile-${href}`}
+                  href={href}
+                  className="shrink-0 rounded-full border border-[#ddd0c1] bg-white/70 px-3.5 py-1.5 text-xs font-bold text-[#5f4b38] transition-colors hover:border-[#2c5631] hover:bg-[#eef3ec] hover:text-[#2c5631]"
+                >
+                  {label}
+                </Link>
+              ))}
+              <Link href="/book" className="shrink-0 rounded-full bg-[#c85a3a] px-3.5 py-1.5 text-xs font-bold text-white">The Book</Link>
+            </div>
+          </nav>
         </header>
 
         <main className="flex-grow mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 sm:py-10">{children}</main>
