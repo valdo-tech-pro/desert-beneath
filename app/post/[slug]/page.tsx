@@ -8,140 +8,41 @@ import DisqusComments from '@/components/DisqusComments'
 
 export const revalidate = 0
 
-function stripHtml(html: string): string {
-  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
-}
+function stripHtml(html: string) { return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() }
 
 async function getPost(slug: string): Promise<Post | null> {
-  const supabase = createClient()
-  const { data: post } = await supabase
-    .from('posts').select('*').eq('slug', slug).eq('published', true).single()
-  return post as Post | null
+  const supabase = await createClient()
+  const { data } = await supabase.from('posts').select('*').eq('slug', slug).eq('published', true).single()
+  return data as Post | null
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const post = await getPost(params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const post = await getPost(slug)
   if (!post) return { title: 'Post Not Found' }
   const description = post.meta_description || post.excerpt || stripHtml(post.content).slice(0, 160)
   const url = `${siteConfig.url}/post/${post.slug}`
-  const ogImage = post.cover_image || siteConfig.defaultOgImage
-  return {
-    title: post.title,
-    description,
-    alternates: { canonical: url },
-    openGraph: {
-      type: 'article', title: post.title, description, url, siteName: siteConfig.name,
-      images: [{ url: ogImage }], publishedTime: post.created_at, modifiedTime: post.updated_at,
-    },
-    twitter: { card: 'summary_large_image', title: post.title, description, images: [ogImage] },
-  }
+  const image = post.cover_image || siteConfig.defaultOgImage
+  return { title: post.title, description, alternates: { canonical: url }, openGraph: { type: 'article', title: post.title, description, url, siteName: siteConfig.name, images: [{ url: image }] }, twitter: { card: 'summary_large_image', title: post.title, description, images: [image] } }
 }
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
-  const post = await getPost(params.slug)
+export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const post = await getPost(slug)
   if (!post) notFound()
-  const typedPost = post as Post
-  const description = typedPost.meta_description || typedPost.excerpt || stripHtml(typedPost.content).slice(0, 160)
-  const publishedDate = new Date(typedPost.created_at)
-  const updatedDate = typedPost.updated_at ? new Date(typedPost.updated_at) : null
+  const description = post.meta_description || post.excerpt || stripHtml(post.content).slice(0, 160)
+  const publishedDate = new Date(post.created_at)
+  const updatedDate = post.updated_at ? new Date(post.updated_at) : null
+  const jsonLd = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.title, description, image: post.cover_image || siteConfig.defaultOgImage, datePublished: post.created_at, dateModified: post.updated_at, author: { '@type': 'Organization', name: siteConfig.name }, publisher: { '@type': 'Organization', name: siteConfig.name }, mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteConfig.url}/post/${post.slug}` } }
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: typedPost.title,
-    description,
-    image: typedPost.cover_image || siteConfig.defaultOgImage,
-    datePublished: typedPost.created_at,
-    dateModified: typedPost.updated_at,
-    author: { '@type': 'Organization', name: siteConfig.name },
-    publisher: { '@type': 'Organization', name: siteConfig.name },
-    mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteConfig.url}/post/${typedPost.slug}` },
-  }
-
-  return (
-    <article>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-
-      <div className="max-w-3xl mx-auto">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-cactus-700 hover:text-cactus-900 transition-colors mb-8">
-          <span aria-hidden="true">←</span> Back to all articles
-        </Link>
-
-        <header className="mb-10">
-          <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm font-medium text-sand-500 mb-5">
-            <span className="inline-flex items-center rounded-full bg-cactus-50 px-3 py-1 text-cactus-700">Cactus Care Guide</span>
-            <span aria-hidden="true">•</span>
-            <time dateTime={typedPost.created_at}>
-              {publishedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
-            </time>
-            {updatedDate && updatedDate.getTime() !== publishedDate.getTime() && (
-              <>
-                <span aria-hidden="true">•</span>
-                <span>Updated {updatedDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-              </>
-            )}
-          </div>
-
-          <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-cactus-900 mb-5">
-            {typedPost.title}
-          </h1>
-
-          {typedPost.excerpt && (
-            <p className="text-lg sm:text-xl leading-relaxed text-sand-700 max-w-2xl">
-              {typedPost.excerpt}
-            </p>
-          )}
-        </header>
-
-        {typedPost.cover_image && (
-          <figure className="mb-10 overflow-hidden rounded-2xl border border-sand-200 bg-sand-100 shadow-sm">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={typedPost.cover_image}
-              alt={typedPost.title}
-              className="w-full max-h-[560px] object-cover"
-            />
-          </figure>
-        )}
-
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_220px] gap-10 items-start">
-          <div>
-            <div className="prose-content text-[1.05rem] sm:text-lg text-sand-800" dangerouslySetInnerHTML={{ __html: typedPost.content }} />
-
-            <div className="mt-12 rounded-2xl border border-cactus-100 bg-cactus-50/70 p-6 sm:p-8">
-              <p className="text-xs font-bold uppercase tracking-[0.16em] text-cactus-700 mb-2">Want the complete system?</p>
-              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-cactus-900 mb-3">Go deeper with The Desert Beneath.</h2>
-              <p className="text-sand-700 leading-relaxed mb-5">
-                Learn how soil, water, light, roots, pests, and propagation work together so you can care for your cacti with confidence.
-              </p>
-              <Link href="/book" className="inline-flex items-center justify-center rounded-lg bg-[#c85a3a] px-5 py-3 font-semibold text-white shadow-sm transition hover:bg-[#a8482c]">
-                Get the book for $7.99 →
-              </Link>
-            </div>
-          </div>
-
-          <aside className="lg:sticky lg:top-28 rounded-2xl border border-sand-200 bg-white p-5 shadow-sm">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-cactus-700 mb-2">Keep learning</p>
-            <h2 className="font-serif text-xl font-bold text-cactus-900 mb-3">More cactus care tips</h2>
-            <p className="text-sm leading-relaxed text-sand-600 mb-4">Explore the latest guides or start with the beginner resources.</p>
-            <div className="space-y-2">
-              <Link href="/#start-here" className="block rounded-lg bg-sand-50 px-3 py-2 text-sm font-semibold text-cactus-800 hover:bg-cactus-50 transition">Start here →</Link>
-              <Link href="/#latest" className="block rounded-lg bg-sand-50 px-3 py-2 text-sm font-semibold text-cactus-800 hover:bg-cactus-50 transition">Latest articles →</Link>
-              <Link href="/book" className="block rounded-lg bg-sand-50 px-3 py-2 text-sm font-semibold text-cactus-800 hover:bg-cactus-50 transition">The book →</Link>
-            </div>
-          </aside>
-        </div>
-
-        <div className="mt-14 border-t border-sand-200 pt-10">
-          <DisqusComments slug={typedPost.slug} title={typedPost.title} />
-        </div>
-
-        <div className="mt-10 text-center">
-          <Link href="/" className="inline-flex items-center gap-2 rounded-lg border border-sand-300 bg-white px-5 py-3 text-sm font-semibold text-cactus-800 hover:border-cactus-300 hover:bg-cactus-50 transition">
-            ← Explore more cactus guides
-          </Link>
-        </div>
-      </div>
-    </article>
-  )
+  return <article>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    <div className="mx-auto max-w-4xl">
+      <Link href="/" className="mb-8 inline-flex text-sm font-semibold text-cactus-700">← Back to all articles</Link>
+      <header className="mb-10"><div className="mb-5 flex flex-wrap gap-3 text-xs font-medium text-sand-500"><span className="rounded-full bg-cactus-50 px-3 py-1 text-cactus-700">Cactus Care Guide</span><time dateTime={post.created_at}>{publishedDate.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</time>{updatedDate && updatedDate.getTime() !== publishedDate.getTime() && <span>Updated {updatedDate.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</span>}</div><h1 className="font-serif text-4xl font-bold leading-tight tracking-tight text-cactus-900 sm:text-5xl lg:text-6xl">{post.title}</h1>{post.excerpt && <p className="mt-5 max-w-3xl text-lg leading-relaxed text-sand-700 sm:text-xl">{post.excerpt}</p>}</header>
+      {post.cover_image && <figure className="mb-10 overflow-hidden rounded-2xl border border-sand-200 bg-sand-100 shadow-sm"><img src={post.cover_image} alt={post.title} className="max-h-[560px] w-full object-cover" /></figure>}
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_220px]"><div><div className="prose-content text-[1.05rem] text-sand-800 sm:text-lg" dangerouslySetInnerHTML={{ __html: post.content }} /><div className="mt-12 rounded-2xl border border-cactus-100 bg-cactus-50/70 p-6 sm:p-8"><p className="text-xs font-bold uppercase tracking-[0.16em] text-cactus-700">Want the complete system?</p><h2 className="mt-2 font-serif text-2xl font-bold text-cactus-900">Go deeper with The Desert Beneath.</h2><p className="mt-3 leading-relaxed text-sand-700">Learn how soil, water, light, roots, pests, and propagation work together.</p><Link href="/book" className="mt-5 inline-flex rounded-lg bg-[#c85a3a] px-5 py-3 font-semibold text-white">Get the book for $7.99 →</Link></div></div><aside className="h-fit rounded-2xl border border-sand-200 bg-white p-5 shadow-sm lg:sticky lg:top-28"><p className="text-xs font-bold uppercase tracking-[0.16em] text-cactus-700">Keep learning</p><h2 className="mt-2 font-serif text-xl font-bold text-cactus-900">More cactus care tips</h2><div className="mt-4 space-y-2"><Link href="/#start-here" className="block rounded-lg bg-sand-50 px-3 py-2 text-sm font-semibold text-cactus-800">Start here →</Link><Link href="/#latest" className="block rounded-lg bg-sand-50 px-3 py-2 text-sm font-semibold text-cactus-800">Latest articles →</Link><Link href="/book" className="block rounded-lg bg-sand-50 px-3 py-2 text-sm font-semibold text-cactus-800">The book →</Link></div></aside></div>
+      <div className="mt-14 border-t border-sand-200 pt-10"><DisqusComments slug={post.slug} title={post.title} /></div>
+    </div>
+  </article>
 }
