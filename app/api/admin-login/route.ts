@@ -32,7 +32,26 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    if (password !== process.env.ADMIN_PASSWORD) {
+    const adminPassword = process.env.ADMIN_PASSWORD
+    const sessionSecret = process.env.ADMIN_SESSION_SECRET
+
+    if (!adminPassword) {
+      console.error('Admin authentication configuration error: ADMIN_PASSWORD is missing.')
+      return NextResponse.json(
+        { success: false, error: 'Admin authentication is not configured correctly. The production admin password is missing.', code: 'ADMIN_PASSWORD_CONFIG_ERROR' },
+        { status: 503 }
+      )
+    }
+
+    if (!sessionSecret || sessionSecret.length < 32) {
+      console.error('Admin authentication configuration error: ADMIN_SESSION_SECRET is missing or too short.')
+      return NextResponse.json(
+        { success: false, error: 'Admin authentication is not configured correctly. The production session secret is missing or invalid.', code: 'ADMIN_SESSION_SECRET_CONFIG_ERROR' },
+        { status: 503 }
+      )
+    }
+
+    if (password !== adminPassword) {
       const next = current && current.resetAt > now
         ? { count: current.count + 1, resetAt: current.resetAt }
         : { count: 1, resetAt: now + WINDOW_MS }
@@ -58,9 +77,9 @@ export async function POST(req: NextRequest) {
       })
       return res
     } catch (error) {
-      console.error('Admin session configuration error:', error)
+      console.error('Admin session creation error:', error)
       return NextResponse.json(
-        { success: false, error: 'Admin login is temporarily unavailable. Please check the production authentication settings.', code: 'AUTH_CONFIG_ERROR' },
+        { success: false, error: 'Admin login could not create a secure session. Please check the production authentication settings.', code: 'AUTH_SESSION_ERROR' },
         { status: 503 }
       )
     }
