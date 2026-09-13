@@ -93,6 +93,41 @@ const groups = {
   },
 } as const
 
+const speciesByGroup = {
+  mammillaria: [
+    ['Mammillaria hahniana', 'mammillaria-hahniana', 'Old Lady Cactus'],
+    ['Mammillaria spinosissima', 'mammillaria-spinosissima', 'Red-Headed Irishman'],
+  ],
+  astrophytum: [
+    ['Astrophytum myriostigma', 'astrophytum-myriostigma', 'Bishop’s Cap'],
+    ['Astrophytum asterias', 'astrophytum-asterias', 'Star Cactus'],
+  ],
+  echinocactus: [
+    ['Echinocactus grusonii', 'echinocactus-grusonii', 'Golden Barrel Cactus'],
+    ['Echinocactus horizonthalonius', 'echinocactus-horizonthalonius', 'Devil’s Pincushion'],
+  ],
+  echinopsis: [
+    ['Echinopsis subdenudata', 'echinopsis-subdenudata', 'Domino Cactus'],
+    ['Echinopsis pachanoi', 'echinopsis-pachanoi', 'San Pedro Cactus'],
+  ],
+  opuntia: [
+    ['Opuntia microdasys', 'opuntia-microdasys', 'Bunny Ears Cactus'],
+    ['Opuntia ficus-indica', 'opuntia-ficus-indica', 'Prickly Pear'],
+  ],
+  ferocactus: [
+    ['Ferocactus latispinus', 'ferocactus-latispinus', 'Devil’s Tongue Barrel'],
+    ['Ferocactus wislizeni', 'ferocactus-wislizeni', 'Fishhook Barrel Cactus'],
+  ],
+  gymnocalycium: [
+    ['Gymnocalycium mihanovichii', 'gymnocalycium-mihanovichii', 'Chin Cactus'],
+    ['Gymnocalycium baldianum', 'gymnocalycium-baldianum', 'Dwarf Chin Cactus'],
+  ],
+  cereus: [
+    ['Cereus repandus', 'cereus-repandus', 'Peruvian Apple Cactus'],
+    ['Cereus hildmannianus', 'cereus-hildmannianus', 'Night-Blooming Cereus'],
+  ],
+} as const
+
 type GroupKey = keyof typeof groups
 
 export function generateStaticParams() {
@@ -122,6 +157,8 @@ export default function SpeciesGuidePage({ params }: { params: { group: string }
     ['Propagation', guide.propagation],
   ] as const
 
+  const individualSpecies = speciesByGroup[params.group as keyof typeof speciesByGroup] ?? []
+
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-8 text-sm text-sand-600">
@@ -147,6 +184,22 @@ export default function SpeciesGuidePage({ params }: { params: { group: string }
               <h2 className="font-serif text-2xl font-bold text-cactus-800">{title}</h2>
               <p className="mt-3 leading-7 text-sand-700">{text}</p>
             </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="mb-12 rounded-3xl border border-sand-200 bg-white p-7 sm:p-10">
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-cactus-600">Individual species</p>
+        <h2 className="mt-2 font-serif text-3xl font-bold text-cactus-800">Go deeper</h2>
+        <p className="mt-3 max-w-2xl leading-7 text-sand-700">Explore individual species for more specific identification, habitat, mature size, flowering, and propagation notes.</p>
+        <div className="mt-7 grid gap-4 sm:grid-cols-2">
+          {individualSpecies.map(([name, slug, common]) => (
+            <Link key={slug} href={`/species/${params.group}/${slug}`} className="rounded-2xl border border-sand-200 bg-sand-100 p-5 transition hover:-translate-y-0.5 hover:border-cactus-300 hover:shadow-sm">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-cactus-600">Species profile</p>
+              <h3 className="mt-2 font-serif text-xl font-bold text-cactus-800">{name}</h3>
+              <p className="mt-1 text-sm text-sand-600">{common}</p>
+              <span className="mt-4 inline-flex text-sm font-bold text-cactus-700">Read the species guide →</span>
+            </Link>
           ))}
         </div>
       </section>
