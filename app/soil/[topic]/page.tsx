@@ -47,13 +47,15 @@ export function generateStaticParams() {
   return Object.keys(topics).map((topic) => ({ topic }))
 }
 
-export async function generateMetadata({ params }: { params: { topic: string } }): Promise<Metadata> {
-  const guide = topics[params.topic as TopicKey]
+export async function generateMetadata({ params }: { params: Promise<{ topic: string }> }): Promise<Metadata> {
+  const { topic } = await params
+  const guide = topics[topic as TopicKey]
   return guide ? { title: guide.title, description: guide.intro } : { title: 'Cactus Soil Guide' }
 }
 
-export default function SoilTopicPage({ params }: { params: { topic: string } }) {
-  const guide = topics[params.topic as TopicKey]
+export default async function SoilTopicPage({ params }: { params: Promise<{ topic: string }> }) {
+  const { topic } = await params
+  const guide = topics[topic as TopicKey]
   if (!guide) notFound()
 
   return (
