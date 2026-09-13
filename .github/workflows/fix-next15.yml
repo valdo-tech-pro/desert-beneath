@@ -1,0 +1,58 @@
+name: Fix Next.js 15 dynamic route params
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Update dynamic route params
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          replacements = {
+            'app/species/[group]/page.tsx': [
+              ("export async function generateMetadata({ params }: { params: { group: string } }): Promise<Metadata> {\n  const guide = groups[params.group as GroupKey]", "export async function generateMetadata({ params }: { params: Promise<{ group: string }> }): Promise<Metadata> {\n  const { group } = await params\n  const guide = groups[group as GroupKey]"),
+              ("export default function SpeciesGuidePage({ params }: { params: { group: string } }) {\n  const guide = groups[params.group as GroupKey]", "export default async function SpeciesGuidePage({ params }: { params: Promise<{ group: string }> }) {\n  const { group } = await params\n  const guide = groups[group as GroupKey]"),
+              ("speciesByGroup[params.group as keyof typeof speciesByGroup]", "speciesByGroup[group as keyof typeof speciesByGroup]"),
+              ("`/species/${params.group}/${slug}`", "`/species/${group}/${slug}`"),
+            ],
+            'app/propagation/[method]/page.tsx': [
+              ("export async function generateMetadata({ params }: { params: { method: string } }): Promise<Metadata> {\n  const guide = guides[params.method as Method]", "export async function generateMetadata({ params }: { params: Promise<{ method: string }> }): Promise<Metadata> {\n  const { method } = await params\n  const guide = guides[method as Method]"),
+              ("export default function PropagationGuidePage({ params }: { params: { method: string } }) {\n  const guide = guides[params.method as Method]", "export default async function PropagationGuidePage({ params }: { params: Promise<{ method: string }> }) {\n  const { method } = await params\n  const guide = guides[method as Method]"),
+            ],
+            'app/species/[group]/[species]/page.tsx': [
+              ("export async function generateMetadata({ params }: { params: { group: string; species: string } }): Promise<Metadata> {", "export async function generateMetadata({ params }: { params: Promise<{ group: string; species: string }> }): Promise<Metadata> {\n  const { group, species: speciesSlug } = await params"),
+              ("export default function IndividualSpeciesPage({ params }: { params: { group: string; species: string } }) {", "export default async function IndividualSpeciesPage({ params }: { params: Promise<{ group: string; species: string }> }) {\n  const { group, species: speciesSlug } = await params"),
+              ("species[params.species as SpeciesKey]", "species[speciesSlug as SpeciesKey]"),
+              ("params.group", "group"),
+            ],
+          }
+          for name, pairs in replacements.items():
+            p = Path(name)
+            text = p.read_text()
+            original = text
+            for old, new in pairs:
+              text = text.replace(old, new)
+            if text == original:
+              raise SystemExit(f'No changes made to {name}; expected Next.js 14 params signature not found')
+            p.write_text(text)
+          PY
+      - name: Commit fixes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          rm .github/workflows/fix-next15.yml
+          git add app/species/'[group]'/page.tsx app/propagation/'[method]'/page.tsx app/species/'[group]'/'[species]'/page.tsx .github/workflows/fix-next15.yml
+          git commit -m "fix: migrate remaining dynamic routes to Next.js 15 [skip ci]"
+          git push origin main
