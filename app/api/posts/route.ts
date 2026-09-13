@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase-admin'
 import { isAdminAuthenticated } from '@/lib/auth'
+import { validatePostInput } from '@/lib/post-validation'
 
 export async function GET() {
   if (!isAdminAuthenticated()) {
@@ -14,7 +15,7 @@ export async function GET() {
     .order('created_at', { ascending: false })
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: 'Unable to load posts' }, { status: 500 })
   }
 
   return NextResponse.json({ posts: data })
@@ -25,34 +26,33 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const body = await req.json()
-  const { title, slug, excerpt, meta_description, content, cover_image, published } = body
+  try {
+    const body = await req.json()
+    const validationError = validatePostInput(body)
+    if (validationError) return NextResponse.json({ error: validationError }, { status: 400 })
 
-  if (!title || !slug || !content) {
-    return NextResponse.json(
-      { error: 'Title, slug, and content are required' },
-      { status: 400 }
-    )
+    const { title, slug, excerpt, meta_description, content, cover_image, published } = body
+    const supabase = createAdminClient()
+    const { data, error } = await supabase
+      .from('posts')
+      .insert({
+        title,
+        slug,
+        excerpt: excerpt || '',
+        meta_description: meta_description || '',
+        content,
+        cover_image: cover_image || null,
+        published: !!published,
+      })
+      .select()
+      .single()
+
+    if (error) {
+      return NextResponse.json({ error: 'Unable to create post' }, { status: 500 })
+    }
+
+    return NextResponse.json({ post: data })
+  } catch {
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
   }
-
-  const supabase = createAdminClient()
-  const { data, error } = await supabase
-    .from('posts')
-    .insert({
-      title,
-      slug,
-      excerpt: excerpt || '',
-      meta_description: meta_description || '',
-      content,
-      cover_image: cover_image || null,
-      published: !!published,
-    })
-    .select()
-    .single()
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
-  }
-
-  return NextResponse.json({ post: data })
 }
