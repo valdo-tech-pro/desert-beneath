@@ -16,6 +16,15 @@ export const metadata: Metadata = {
   alternates: { canonical: siteConfig.url },
 }
 
+const navItems = [
+  ['Cactus Care', '/#start-here', 'lg'],
+  ['Species', '/species', 'lg'],
+  ['Problems', '/problems', 'lg'],
+  ['Soil', '/soil', 'xl'],
+  ['Propagation', '/propagation', 'xl'],
+  ['About', '/about', 'xl'],
+]
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -28,12 +37,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <span className="truncate text-base font-extrabold tracking-tight text-[#2c5631] sm:text-lg">{siteConfig.name}</span>
             </Link>
             <nav aria-label="Main navigation" className="flex items-center gap-1 sm:gap-1.5">
-              <Link href="/#start-here" className="hidden rounded-lg px-2.5 py-2 text-sm font-semibold text-[#5f4b38] transition-colors hover:bg-[#efe6da] hover:text-[#2c5631] lg:block">Cactus Care</Link>
-              <Link href="/#species" className="hidden rounded-lg px-2.5 py-2 text-sm font-semibold text-[#5f4b38] transition-colors hover:bg-[#efe6da] hover:text-[#2c5631] lg:block">Species</Link>
-              <Link href="/#problems" className="hidden rounded-lg px-2.5 py-2 text-sm font-semibold text-[#5f4b38] transition-colors hover:bg-[#efe6da] hover:text-[#2c5631] lg:block">Problems</Link>
-              <Link href="/#soil" className="hidden rounded-lg px-2.5 py-2 text-sm font-semibold text-[#5f4b38] transition-colors hover:bg-[#efe6da] hover:text-[#2c5631] xl:block">Soil</Link>
-              <Link href="/#propagation" className="hidden rounded-lg px-2.5 py-2 text-sm font-semibold text-[#5f4b38] transition-colors hover:bg-[#efe6da] hover:text-[#2c5631] xl:block">Propagation</Link>
-              <Link href="/#about" className="hidden rounded-lg px-2.5 py-2 text-sm font-semibold text-[#5f4b38] transition-colors hover:bg-[#efe6da] hover:text-[#2c5631] xl:block">About</Link>
+              {navItems.map(([label, href, breakpoint]) => (
+                <Link key={href} href={href} className={`hidden rounded-lg px-2.5 py-2 text-sm font-semibold text-[#5f4b38] transition-colors hover:bg-[#efe6da] hover:text-[#2c5631] ${breakpoint === 'lg' ? 'lg:block' : 'xl:block'}`}>
+                  {label}
+                </Link>
+              ))}
               <Link href="/book" className="rounded-lg bg-[#c85a3a] px-3.5 py-2 text-sm font-bold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-[#a8482c] hover:shadow-md sm:px-4">Book</Link>
             </nav>
           </div>
@@ -54,10 +62,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#d6c8b8]">Explore</h3>
                 <ul className="mt-4 space-y-3 text-sm text-[#b8aea3]">
                   <li><Link href="/#start-here" className="hover:text-white">Cactus Care</Link></li>
-                  <li><Link href="/#species" className="hover:text-white">Species</Link></li>
-                  <li><Link href="/#problems" className="hover:text-white">Problems</Link></li>
-                  <li><Link href="/#propagation" className="hover:text-white">Propagation</Link></li>
-                  <li><Link href="/#about" className="hover:text-white">About</Link></li>
+                  <li><Link href="/species" className="hover:text-white">Species</Link></li>
+                  <li><Link href="/problems" className="hover:text-white">Problems</Link></li>
+                  <li><Link href="/soil" className="hover:text-white">Soil</Link></li>
+                  <li><Link href="/propagation" className="hover:text-white">Propagation</Link></li>
+                  <li><Link href="/about" className="hover:text-white">About</Link></li>
                 </ul>
               </div>
               <div>
