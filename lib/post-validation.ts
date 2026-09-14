@@ -1,17 +1,12 @@
+import { POST_CATEGORIES } from '@/lib/categories'
+
 const MAX_TITLE = 200
 const MAX_SLUG = 160
 const MAX_EXCERPT = 600
 const MAX_META_DESCRIPTION = 160
 const MAX_COVER_URL = 2_048
 
-export const POST_CATEGORIES = [
-  'Cactus Care',
-  'Species Guides',
-  'Problems & Diagnosis',
-  'Soil & Water',
-  'Propagation',
-  'General',
-] as const
+export { POST_CATEGORIES }
 
 export function validatePostInput(input: unknown): string | null {
   if (!input || typeof input !== 'object') return 'Invalid request body'
@@ -24,7 +19,9 @@ export function validatePostInput(input: unknown): string | null {
     return 'Slug must contain lowercase letters, numbers, and single hyphens only'
   }
   if (typeof content !== 'string' || !content.trim()) return 'Content is required'
-  if (typeof category !== 'string' || !POST_CATEGORIES.includes(category as typeof POST_CATEGORIES[number])) return 'A valid category is required'
+  if (typeof category !== 'string' || !POST_CATEGORIES.includes(category as (typeof POST_CATEGORIES)[number])) {
+    return 'A valid category is required'
+  }
   if (title.length > MAX_TITLE) return `Title must be ${MAX_TITLE} characters or fewer`
   if (slug.length > MAX_SLUG) return `Slug must be ${MAX_SLUG} characters or fewer`
   if (typeof excerpt !== 'string' || excerpt.length > MAX_EXCERPT) return `Excerpt must be ${MAX_EXCERPT} characters or fewer`
