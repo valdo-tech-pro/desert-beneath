@@ -16,7 +16,7 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
     if (validationError) return NextResponse.json({ error: validationError }, { status: 400 })
 
     const { id } = await params
-    const { title, slug, excerpt, meta_description, content, cover_image, published } = body
+    const { title, slug, excerpt, meta_description, content, cover_image, category, published } = body
     const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('posts')
@@ -27,6 +27,7 @@ export async function PUT(req: NextRequest, { params }: RouteContext) {
         meta_description,
         content,
         cover_image: cover_image || null,
+        category,
         published: !!published,
         updated_at: new Date().toISOString(),
       })
