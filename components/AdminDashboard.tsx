@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Post } from '@/lib/types'
+import { POST_CATEGORIES } from '@/lib/post-validation'
 
 function slugify(text: string) {
   return text
@@ -20,6 +21,7 @@ const emptyForm = {
   meta_description: '',
   content: '',
   cover_image: '',
+  category: 'General',
   published: false,
 }
 
@@ -63,6 +65,7 @@ export default function AdminDashboard() {
       meta_description: post.meta_description || '',
       content: post.content,
       cover_image: post.cover_image || '',
+      category: post.category || 'General',
       published: post.published,
     })
     setEditingId(post.id)
@@ -115,6 +118,7 @@ export default function AdminDashboard() {
       meta_description: form.meta_description,
       content: form.content,
       cover_image: form.cover_image,
+      category: form.category,
       published: form.published,
     }
 
@@ -174,6 +178,14 @@ export default function AdminDashboard() {
         </div>
 
         <div>
+          <label htmlFor="category" className="block text-sm font-medium text-sand-700 mb-1">Category</label>
+          <select id="category" value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))} className="w-full border border-sand-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-cactus-400" required>
+            {POST_CATEGORIES.map((category) => <option key={category} value={category}>{category}</option>)}
+          </select>
+          <p className="text-xs text-sand-500 mt-1">Choose the section where this post belongs.</p>
+        </div>
+
+        <div>
           <label className="block text-sm font-medium text-sand-700 mb-1">Cover Image</label>
           <div className="flex flex-col sm:flex-row gap-2">
             <input type="file" accept="image/jpeg,image/png,image/webp,image/gif" disabled={uploading} onChange={(e) => handleImageUpload(e.target.files?.[0])} className="w-full border border-sand-300 rounded-md px-3 py-2 text-sm" />
@@ -228,7 +240,7 @@ export default function AdminDashboard() {
             <div key={post.id} className="bg-white border border-sand-200 rounded-md p-3 flex items-center justify-between">
               <div>
                 <p className="font-medium text-sand-900">{post.title}</p>
-                <p className="text-xs text-sand-500">{post.published ? '✅ Published' : '📝 Draft'} &middot; /{post.slug}</p>
+                <p className="text-xs text-sand-500">{post.published ? '✅ Published' : '📝 Draft'} &middot; {post.category || 'General'} &middot; /{post.slug}</p>
               </div>
               <div className="flex gap-2">
                 <button onClick={() => startEdit(post)} className="text-sm text-cactus-700 hover:underline">Edit</button>
