@@ -8,6 +8,7 @@ create table posts (
   meta_description text default '',
   content text not null,
   cover_image text,
+  category text not null default 'General',
   published boolean default false,
   created_at timestamp with time zone default now(),
   updated_at timestamp with time zone default now()
@@ -26,17 +27,19 @@ create policy "Public can read published posts"
 -- No additional policies are needed for the admin panel to work.
 
 -- Optional: insert a sample post to test
-insert into posts (slug, title, excerpt, content, published)
+insert into posts (slug, title, excerpt, content, published, category)
 values (
   'welcome-to-the-desert-beneath',
   'Welcome to The Desert Beneath',
   'A blog about cactus care, soil science, and growing healthy succulents from the roots up.',
   '<p>Welcome! This blog is dedicated to everything beneath the surface of healthy cactus growth — soil composition, root health, watering science, and species-specific care.</p><p>Stay tuned for guides on propagation, troubleshooting common issues like rot and etiolation, and deep dives into the best soil mixes for different cactus species.</p>',
-  true
+  true,
+  'General'
 );
 
 -- ============================================
 -- MIGRATION: If you already ran the schema above before,
--- run this instead to add the new SEO column:
+-- run this instead to add the new SEO column and category:
 -- ============================================
 -- alter table posts add column if not exists meta_description text default '';
+-- alter table posts add column if not exists category text not null default 'General';
