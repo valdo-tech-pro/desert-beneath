@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     const validationError = validatePostInput(body)
     if (validationError) return NextResponse.json({ error: validationError }, { status: 400 })
 
-    const { title, slug, excerpt, meta_description, content, cover_image, published } = body
+    const { title, slug, excerpt, meta_description, content, cover_image, category, published } = body
     const supabase = createAdminClient()
     const { data, error } = await supabase
       .from('posts')
@@ -42,6 +42,7 @@ export async function POST(req: NextRequest) {
         meta_description: meta_description || '',
         content,
         cover_image: cover_image || null,
+        category,
         published: !!published,
       })
       .select()
