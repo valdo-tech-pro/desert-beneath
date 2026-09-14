@@ -6,6 +6,7 @@ export interface Post {
   meta_description: string
   content: string
   cover_image: string | null
+  category: string
   published: boolean
   created_at: string
   updated_at: string
