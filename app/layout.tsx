@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 
 const navItems = [
   ['Cactus Care', '/#start-here', 'lg'],
+  ['Categories', '/categories', 'lg'],
   ['Species', '/species', 'lg'],
   ['Problems', '/problems', 'lg'],
   ['Soil', '/soil', 'xl'],
@@ -48,11 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <nav aria-label="Cactus categories" className="border-t border-[#e6dccf] lg:hidden">
             <div className="mx-auto flex max-w-6xl gap-1.5 overflow-x-auto px-4 py-2.5 sm:px-6" style={{ scrollbarWidth: 'none' }}>
               {navItems.map(([label, href]) => (
-                <Link
-                  key={`mobile-${href}`}
-                  href={href}
-                  className="shrink-0 rounded-full border border-[#ddd0c1] bg-white/70 px-3.5 py-1.5 text-xs font-bold text-[#5f4b38] transition-colors hover:border-[#2c5631] hover:bg-[#eef3ec] hover:text-[#2c5631]"
-                >
+                <Link key={`mobile-${href}`} href={href} className="shrink-0 rounded-full border border-[#ddd0c1] bg-white/70 px-3.5 py-1.5 text-xs font-bold text-[#5f4b38] transition-colors hover:border-[#2c5631] hover:bg-[#eef3ec] hover:text-[#2c5631]">
                   {label}
                 </Link>
               ))}
@@ -76,6 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#d6c8b8]">Explore</h3>
                 <ul className="mt-4 space-y-3 text-sm text-[#b8aea3]">
                   <li><Link href="/#start-here" className="hover:text-white">Cactus Care</Link></li>
+                  <li><Link href="/categories" className="hover:text-white">Categories</Link></li>
                   <li><Link href="/species" className="hover:text-white">Species</Link></li>
                   <li><Link href="/problems" className="hover:text-white">Problems</Link></li>
                   <li><Link href="/soil" className="hover:text-white">Soil</Link></li>
