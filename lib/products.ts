@@ -81,6 +81,24 @@ export const digitalProducts: DigitalProduct[] = [
     status: 'coming-soon',
     includes: ['Method selection', 'Preparation checklist', 'Aftercare principles', 'Troubleshooting'],
   },
+  {
+    slug: 'complete-cactus-care-bundle',
+    title: 'Complete Cactus Care Bundle',
+    shortTitle: 'Complete Cactus Bundle',
+    description: 'A future all-in-one collection combining the Cactus Care Book with practical watering, diagnosis, and propagation resources.',
+    longDescription: 'A planned bundle for growers who want the core cactus-care reference together with practical tools for watering decisions, problem diagnosis, and propagation.',
+    price: 'Coming soon',
+    format: 'Digital bundle',
+    icon: '🎁',
+    category: 'Complete toolkit',
+    status: 'coming-soon',
+    includes: [
+      'The Cactus Care Book',
+      'Cactus Watering Planner',
+      'Cactus Problem Diagnosis Guide',
+      'Cactus Propagation Guide',
+    ],
+  },
 ]
 
 export function getProduct(slug: string) {
