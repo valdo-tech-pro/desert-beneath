@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 const navItems = [
   ['Cactus Care', '/#start-here', 'lg'],
   ['Categories', '/categories', 'lg'],
+  ['Shop', '/shop', 'lg'],
   ['Species', '/species', 'lg'],
   ['Problems', '/problems', 'lg'],
   ['Soil', '/soil', 'xl'],
@@ -67,13 +68,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div>
                 <Link href="/" className="inline-flex items-center gap-2 text-lg font-extrabold text-white"><span>🌵</span><span>{siteConfig.name}</span></Link>
                 <p className="mt-4 max-w-md text-sm leading-7 text-[#b8aea3]">Practical cactus care, soil science, propagation, and growing guidance — helping you understand what is happening beneath the surface.</p>
-                <Link href="/book" className="mt-5 inline-flex items-center rounded-lg border border-[#6b5848] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:border-[#c85a3a] hover:bg-[#3a2f25]">Get the Book →</Link>
+                <Link href="/shop" className="mt-5 inline-flex items-center rounded-lg border border-[#6b5848] px-4 py-2.5 text-sm font-bold text-white transition-colors hover:border-[#c85a3a] hover:bg-[#3a2f25]">Visit the Shop →</Link>
               </div>
               <div>
                 <h3 className="text-xs font-bold uppercase tracking-[0.18em] text-[#d6c8b8]">Explore</h3>
                 <ul className="mt-4 space-y-3 text-sm text-[#b8aea3]">
                   <li><Link href="/#start-here" className="hover:text-white">Cactus Care</Link></li>
                   <li><Link href="/categories" className="hover:text-white">Categories</Link></li>
+                  <li><Link href="/shop" className="hover:text-white">Shop</Link></li>
                   <li><Link href="/species" className="hover:text-white">Species</Link></li>
                   <li><Link href="/problems" className="hover:text-white">Problems</Link></li>
                   <li><Link href="/soil" className="hover:text-white">Soil</Link></li>
