@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import { createClient } from '@/lib/supabase-server'
 import { Post } from '@/lib/types'
 import { siteConfig } from '@/lib/site-config'
+import { digitalProducts } from '@/lib/products'
 
 export const revalidate = 3600
 
@@ -29,7 +30,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = await createClient()
   const { data: posts } = await supabase.from('posts').select('slug, updated_at').eq('published', true).order('created_at', { ascending: false })
   const staticEntries = staticRoutes.map(route => ({ url: `${siteConfig.url}${route.path}`, lastModified: new Date(), changeFrequency: route.changeFrequency, priority: route.priority }))
+  const productEntries = digitalProducts.map(product => ({ url: `${siteConfig.url}/shop/${product.slug}`, lastModified: new Date(), changeFrequency: 'monthly' as const, priority: product.status === 'available' ? 0.8 : 0.5 }))
   const resourceEntries = [...speciesGroups.map(slug => ({ url: `${siteConfig.url}/species/${slug}`, priority: 0.7 })), ...problemPages.map(slug => ({ url: `${siteConfig.url}/problems/${slug}`, priority: 0.7 })), ...soilTopics.map(slug => ({ url: `${siteConfig.url}/soil/${slug}`, priority: 0.7 }))].map(route => ({ ...route, lastModified: new Date(), changeFrequency: 'monthly' as const }))
   const postEntries = ((posts as Pick<Post,'slug'|'updated_at'>[]) || []).map(post => ({ url: `${siteConfig.url}/post/${post.slug}`, lastModified: new Date(post.updated_at), changeFrequency: 'weekly' as const, priority: 0.7 }))
-  return [...staticEntries, ...resourceEntries, ...postEntries]
+  return [...staticEntries, ...productEntries, ...resourceEntries, ...postEntries]
 }
