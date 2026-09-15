@@ -24,6 +24,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   if (!product) notFound()
 
   const available = product.status === 'available' && product.checkoutUrl
+  const relatedProducts = digitalProducts
+    .filter((item) => item.slug !== product.slug)
+    .filter((item) => item.status === 'available' || item.slug === 'complete-cactus-care-bundle')
+    .slice(0, 2)
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -75,6 +79,31 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </aside>
         </div>
       </section>
+
+      {relatedProducts.length > 0 && (
+        <section className="mt-8 rounded-3xl border border-[#e5d9ca] bg-[#f1e9dc] p-6 sm:p-8">
+          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#c85a3a]">Complete your toolkit</p>
+              <h2 className="mt-2 font-serif text-2xl font-bold text-[#2c5631] sm:text-3xl">More help for your cactus-growing journey.</h2>
+            </div>
+            <Link href="/shop" className="text-sm font-bold text-[#2c5631] hover:underline">View all products →</Link>
+          </div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {relatedProducts.map((item) => (
+              <Link key={item.slug} href={`/shop/${item.slug}`} className="rounded-2xl border border-[#dfd1c1] bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-md">
+                <div className="flex items-start justify-between gap-4">
+                  <span className="text-2xl">{item.icon}</span>
+                  <span className="text-sm font-bold text-[#2c5631]">{item.price}</span>
+                </div>
+                <h3 className="mt-4 font-bold text-[#2c5631]">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-[#6c5a48]">{item.description}</p>
+                <span className="mt-4 inline-block text-sm font-bold text-[#c85a3a]">Explore →</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
