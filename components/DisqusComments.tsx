@@ -3,17 +3,23 @@
 import { useEffect } from 'react'
 import { siteConfig } from '@/lib/site-config'
 
+type DisqusPage = {
+  url: string
+  identifier: string
+  title: string
+}
+
 type DisqusApi = {
   reset: (options: {
     reload: boolean
-    config: () => void
+    config: (this: { page: DisqusPage }) => void
   }) => void
 }
 
 declare global {
   interface Window {
     DISQUS?: DisqusApi
-    disqus_config?: () => void
+    disqus_config?: (this: { page: DisqusPage }) => void
   }
 }
 
@@ -23,35 +29,33 @@ const DISQUS_SCRIPT_ID = 'disqus-embed-script'
 export default function DisqusComments({ slug, title }: { slug: string; title: string }) {
   useEffect(() => {
     const pageUrl = `${siteConfig.url}/post/${slug}`
-    const configure = () => {
-      window.disqus_config = function () {
-        const context = this as unknown as {
-          page: { url: string; identifier: string; title: string }
-        }
-        context.page = {
-          url: pageUrl,
-          identifier: slug,
-          title,
-        }
+
+    window.disqus_config = function () {
+      this.page = {
+        url: pageUrl,
+        identifier: slug,
+        title,
       }
     }
 
-    configure()
-
+    // Disqus is a single-page widget. When Next.js changes articles without a
+    // full page reload, tell the already-loaded Disqus client to load the new
+    // thread instead of injecting another embed script.
     if (window.DISQUS?.reset) {
       window.DISQUS.reset({
         reload: true,
         config: function () {
-          this.page.identifier = slug
           this.page.url = pageUrl
+          this.page.identifier = slug
           this.page.title = title
         },
       })
       return
     }
 
-    const existingScript = document.getElementById(DISQUS_SCRIPT_ID)
-    if (existingScript) return
+    // Load the Disqus client only once. The current disqus_config above is
+    // picked up by the script when it initializes.
+    if (document.getElementById(DISQUS_SCRIPT_ID)) return
 
     const script = document.createElement('script')
     script.id = DISQUS_SCRIPT_ID
