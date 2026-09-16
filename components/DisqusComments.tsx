@@ -23,7 +23,7 @@ type DisqusApi = {
 declare global {
   interface Window {
     DISQUS?: DisqusApi
-    disqus_config?: (this: { page: DisqusPage }) => void
+    disqus_config?: (this: DisqusResetConfig) => void
   }
 }
 
