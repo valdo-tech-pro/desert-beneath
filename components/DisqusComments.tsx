@@ -39,12 +39,12 @@ export default function DisqusComments({ slug, title }: { slug: string; title: s
     }
 
     // Disqus is a single-page widget. When Next.js changes articles without a
-    // full page reload, tell the already-loaded Disqus client to load the new
-    // thread instead of injecting another embed script.
+    // full page reload, reload the correct thread instead of adding another
+    // embed script.
     if (window.DISQUS?.reset) {
       window.DISQUS.reset({
         reload: true,
-        config: function () {
+        config: function (this: { page: DisqusPage }) {
           this.page.url = pageUrl
           this.page.identifier = slug
           this.page.title = title
@@ -53,8 +53,8 @@ export default function DisqusComments({ slug, title }: { slug: string; title: s
       return
     }
 
-    // Load the Disqus client only once. The current disqus_config above is
-    // picked up by the script when it initializes.
+    // Load the Disqus client only once. The current disqus_config is picked
+    // up when the script initializes.
     if (document.getElementById(DISQUS_SCRIPT_ID)) return
 
     const script = document.createElement('script')
