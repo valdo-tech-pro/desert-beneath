@@ -1,27 +1,64 @@
 'use client'
 
 import { useEffect } from 'react'
+import { siteConfig } from '@/lib/site-config'
+
+type DisqusApi = {
+  reset: (options: {
+    reload: boolean
+    config: () => void
+  }) => void
+}
+
+declare global {
+  interface Window {
+    DISQUS?: DisqusApi
+    disqus_config?: () => void
+  }
+}
+
+const DISQUS_SHORTNAME = 'desert-beneath'
+const DISQUS_SCRIPT_ID = 'disqus-embed-script'
 
 export default function DisqusComments({ slug, title }: { slug: string; title: string }) {
   useEffect(() => {
-    const d = window.document
-    // @ts-ignore
-    window.disqus_config = function (this: any) {
-      this.page = this.page || {}
-      this.page.url = `https://desert-beneath-zeta.vercel.app/post/${slug}`
-      this.page.identifier = slug
-      this.page.title = title
-    }			
-
-    const s = d.createElement('script')
-    s.src = 'https://desert-beneath.disqus.com/embed.js'   
-      s.setAttribute('data-timestamp', String(+new Date()))
-    ;(d.head || d.body).appendChild(s)
-
-    return () => {
-      const disqusThread = d.getElementById('disqus_thread')
-      if (disqusThread) disqusThread.innerHTML = ''
+    const pageUrl = `${siteConfig.url}/post/${slug}`
+    const configure = () => {
+      window.disqus_config = function () {
+        const context = this as unknown as {
+          page: { url: string; identifier: string; title: string }
+        }
+        context.page = {
+          url: pageUrl,
+          identifier: slug,
+          title,
+        }
+      }
     }
+
+    configure()
+
+    if (window.DISQUS?.reset) {
+      window.DISQUS.reset({
+        reload: true,
+        config: function () {
+          this.page.identifier = slug
+          this.page.url = pageUrl
+          this.page.title = title
+        },
+      })
+      return
+    }
+
+    const existingScript = document.getElementById(DISQUS_SCRIPT_ID)
+    if (existingScript) return
+
+    const script = document.createElement('script')
+    script.id = DISQUS_SCRIPT_ID
+    script.src = `https://${DISQUS_SHORTNAME}.disqus.com/embed.js`
+    script.setAttribute('data-timestamp', String(Date.now()))
+    script.async = true
+    document.head.appendChild(script)
   }, [slug, title])
 
   return (
@@ -31,4 +68,3 @@ export default function DisqusComments({ slug, title }: { slug: string; title: s
     </div>
   )
 }
-
