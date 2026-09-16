@@ -9,10 +9,14 @@ type DisqusPage = {
   title: string
 }
 
+type DisqusResetConfig = {
+  page: DisqusPage
+}
+
 type DisqusApi = {
   reset: (options: {
     reload: boolean
-    config: (this: { page: DisqusPage }) => void
+    config: (this: DisqusResetConfig) => void
   }) => void
 }
 
@@ -38,23 +42,20 @@ export default function DisqusComments({ slug, title }: { slug: string; title: s
       }
     }
 
-    // Disqus is a single-page widget. When Next.js changes articles without a
-    // full page reload, reload the correct thread instead of adding another
-    // embed script.
     if (window.DISQUS?.reset) {
       window.DISQUS.reset({
         reload: true,
-        config: function (this: { page: DisqusPage }) {
-          this.page.url = pageUrl
-          this.page.identifier = slug
-          this.page.title = title
+        config: function (this: DisqusResetConfig) {
+          this.page = {
+            url: pageUrl,
+            identifier: slug,
+            title,
+          }
         },
       })
       return
     }
 
-    // Load the Disqus client only once. The current disqus_config is picked
-    // up when the script initializes.
     if (document.getElementById(DISQUS_SCRIPT_ID)) return
 
     const script = document.createElement('script')
