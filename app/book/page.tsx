@@ -52,11 +52,12 @@ export default function BookPage() {
           <div className="mx-auto w-full max-w-md">
             <div className="overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-2 shadow-2xl">
               <Image
-                src="/images/desert-cover.webp"
+                src="https://raw.githubusercontent.com/valdo-tech-pro/desert-beneath/main/public/images/desert-cover.webp"
                 alt="The Desert Beneath: A Complete Guide to Soil Composition for Cactus Cultivation — First Edition book cover"
                 width={520}
                 height={787}
                 priority
+                unoptimized
                 sizes="(max-width: 768px) 90vw, 420px"
                 className="h-auto w-full rounded-xl"
               />
