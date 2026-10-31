@@ -53,9 +53,18 @@ export async function POST(req: NextRequest) {
     )
   }
 
+  let password: string
   try {
     const body = await req.json()
-    const password = typeof body?.password === 'string' ? body.password : ''
+    password = typeof body?.password === 'string' ? body.password : ''
+  } catch {
+    return NextResponse.json(
+      { success: false, error: 'Invalid login request.', code: 'INVALID_REQUEST' },
+      { status: 400 }
+    )
+  }
+
+  try {
 
     if (password.length === 0 || password.length > 256) {
       return NextResponse.json(
@@ -71,7 +80,16 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const session = createAdminSession()
+    let session: string
+    try {
+      session = createAdminSession()
+    } catch (error) {
+      console.error('Admin session creation error:', error)
+      return NextResponse.json(
+        { success: false, error: 'Admin login could not create a secure session.', code: 'AUTH_SESSION_ERROR' },
+        { status: 503 }
+      )
+    }
 
     try {
       await clearAdminLoginAttempts(req)
@@ -89,10 +107,11 @@ export async function POST(req: NextRequest) {
       path: '/',
     })
     return res
-  } catch {
+  } catch (error) {
+    console.error('Unexpected admin login error:', error)
     return NextResponse.json(
-      { success: false, error: 'Invalid login request.', code: 'INVALID_REQUEST' },
-      { status: 400 }
+      { success: false, error: 'Admin login could not be completed.', code: 'AUTH_SESSION_ERROR' },
+      { status: 503 }
     )
   }
 }
