@@ -85,10 +85,10 @@ export default function PrivacyPage() {
             This website and the services embedded in it may use cookies, pixels, local storage, or similar technologies. These technologies can support site functionality, remember preferences, measure traffic, help protect services, or support third-party features such as analytics and comments.
           </p>
           <p className={paragraphClass}>
-            You can use your browser settings to review, block, or delete cookies. Blocking some cookies may affect how parts of the website or third-party features work. Your browser settings do not necessarily control every form of tracking by third-party services.
+            The website provides a privacy-choice panel where you can accept all optional services, reject optional services, or customize your choices for Google Analytics and Disqus comments. These services are not loaded unless you enable the corresponding option. Essential storage is used to remember your choices and support basic site operation.
           </p>
           <p className={paragraphClass}>
-            Google Analytics is currently loaded by the website. This page does not represent that a cookie-consent banner or preference tool is in place. Where applicable law requires consent before non-essential cookies or similar technologies are used, the website should obtain that consent before activating them.
+            You can reopen the panel at any time using the “Cookie settings” control displayed on the website. Changing an option affects future loading of the relevant service. If a third-party service has already set cookies, you may also need to clear those cookies through your browser settings. Browser controls can be used to review, block, or delete cookies, although they may not control every form of third-party tracking.
           </p>
         </section>
 
@@ -118,7 +118,7 @@ export default function PrivacyPage() {
             Depending on where you live, applicable privacy laws may give you rights to request access to, correction of, deletion of, or restriction of certain personal information, to object to particular processing, or to withdraw consent where processing is based on consent. You may also have the right to complain to a relevant data-protection authority.
           </p>
           <p className={paragraphClass}>
-            To make a privacy request, contact us using the details below. We may need to verify your request before acting on it. Some information may need to be retained where the law permits or requires it.
+            You can change or withdraw your optional analytics and comments choices at any time through the “Cookie settings” control. To make another privacy request, contact us using the details below. We may need to verify your request before acting on it. Some information may need to be retained where the law permits or requires it.
           </p>
         </section>
 
