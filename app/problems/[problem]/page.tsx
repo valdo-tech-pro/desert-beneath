@@ -70,7 +70,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ problem: string }> }): Promise<Metadata> {
   const { problem } = await params
   const guide = problems[problem as ProblemKey]
-  return guide ? { title: guide.title, description: guide.symptom } : { title: 'Cactus Problem Diagnosis' }
+  return guide ? { title: guide.title, description: guide.symptom, alternates: { canonical: `/problems/${problem}` } } : { title: 'Cactus Problem Diagnosis' }
 }
 
 export default async function ProblemPage({ params }: { params: Promise<{ problem: string }> }) {
