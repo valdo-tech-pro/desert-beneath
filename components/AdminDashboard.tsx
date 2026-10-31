@@ -8,9 +8,36 @@ function slugify(text: string) {
   return text
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/\s+/g, '-')
+    .replace(/[^\\w\\s-]/g, '')
+    .replace(/\\s+/g, '-')
     .replace(/-+/g, '-')
+}
+
+function suggestCategoryFromTitle(title: string): string | null {
+  const value = title.toLowerCase()
+
+  // Match the most specific topics before broader care-related terms.
+  if (/soil|substrate|drainage|draining|watering|watered|overwater|underwater|moisture|root zone|ph|pH|salt buildup/.test(value)) {
+    return 'Soil & Water'
+  }
+
+  if (/propagat|cutting|cuttings|offset|offsets|pup|pups|graft|grafting|seed germinat|germination/.test(value)) {
+    return 'Propagation'
+  }
+
+  if (/rot|rotting|pest|mealybug|mealybugs|spider mite|spider mites|fungus gnat|fungus gnats|sunburn|scorch|yellow|discolor|diagnos|recover|recovery|revert|reversion|corking|wrinkled|stressed|stress-induced/.test(value)) {
+    return 'Problems & Diagnosis'
+  }
+
+  if (/astrophytum|mammillaria|echinocactus|golden barrel|bishop.s cap|christmas cactus|species guide|species-focused/.test(value)) {
+    return 'Species Guides'
+  }
+
+  if (/care|repot|repotting|fertiliz|flower|bloom|dormancy|dormant|humidity|cold weather|indoors|indoor|light|sunlight|spines|spine|pot size|beginner|starter setup|wind/.test(value)) {
+    return 'Cactus Care'
+  }
+
+  return null
 }
 
 const emptyForm = {
@@ -21,7 +48,7 @@ const emptyForm = {
   meta_description: '',
   content: '',
   cover_image: '',
-  category: 'General',
+  category: '',
   published: false,
 }
 
@@ -34,6 +61,7 @@ export default function AdminDashboard() {
   const [uploading, setUploading] = useState(false)
   const [message, setMessage] = useState('')
   const [slugTouched, setSlugTouched] = useState(false)
+  const [categoryTouched, setCategoryTouched] = useState(false)
 
   useEffect(() => {
     fetchPosts()
@@ -53,6 +81,7 @@ export default function AdminDashboard() {
     setForm(emptyForm)
     setEditingId(null)
     setSlugTouched(false)
+    setCategoryTouched(false)
     setMessage('')
   }
 
@@ -70,14 +99,17 @@ export default function AdminDashboard() {
     })
     setEditingId(post.id)
     setSlugTouched(true)
+    setCategoryTouched(true)
     setMessage('')
   }
 
   function handleTitleChange(value: string) {
+    const suggestedCategory = suggestCategoryFromTitle(value)
     setForm((f) => ({
       ...f,
       title: value,
       slug: slugTouched ? f.slug : slugify(value),
+      category: categoryTouched ? f.category : (suggestedCategory || ''),
     }))
   }
 
@@ -179,10 +211,15 @@ export default function AdminDashboard() {
 
         <div>
           <label htmlFor="category" className="block text-sm font-medium text-sand-700 mb-1">Category</label>
-          <select id="category" value={form.category} onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))} className="w-full border border-sand-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-cactus-400" required>
+          <select id="category" value={form.category} onChange={(e) => { setCategoryTouched(true); setForm((f) => ({ ...f, category: e.target.value })) }} className="w-full border border-sand-300 rounded-md px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-cactus-400" required>
+            <option value="" disabled>Select a category</option>
             {POST_CATEGORIES.map((category) => <option key={category} value={category}>{category}</option>)}
           </select>
-          <p className="text-xs text-sand-500 mt-1">Choose the section where this post belongs.</p>
+          <p className="text-xs text-sand-500 mt-1">
+            {form.category && !categoryTouched
+              ? 'Suggested from the title. Please check it and change it if needed.'
+              : 'Choose the section where this post belongs. The title may suggest a category automatically.'}
+          </p>
         </div>
 
         <div>
