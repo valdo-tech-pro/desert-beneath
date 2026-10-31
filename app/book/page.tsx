@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'The Desert Beneath — Cactus Soil Composition Book',
   description: bookDescription,
   alternates: { canonical: '/book' },
-  openGraph: { title: bookTitle, description: bookDescription, url: '/book', type: 'book' },
+  openGraph: { title: bookTitle, description: bookDescription, url: '/book', type: 'website' },
 }
 
 const benefits = [
