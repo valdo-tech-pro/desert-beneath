@@ -50,7 +50,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ topic: string }> }): Promise<Metadata> {
   const { topic } = await params
   const guide = topics[topic as TopicKey]
-  return guide ? { title: guide.title, description: guide.intro } : { title: 'Cactus Soil Guide' }
+  return guide ? { title: guide.title, description: guide.intro, alternates: { canonical: `/soil/${topic}` } } : { title: 'Cactus Soil Guide' }
 }
 
 export default async function SoilTopicPage({ params }: { params: Promise<{ topic: string }> }) {
