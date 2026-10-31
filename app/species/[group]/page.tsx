@@ -141,6 +141,7 @@ export async function generateMetadata({ params }: { params: Promise<{ group: st
   return {
     title: `${guide.name} Cactus Care Guide`,
     description: `${guide.description} Learn how to identify ${guide.name}, understand its growth habits, and manage light, water, soil, common problems, and propagation.`,
+    alternates: { canonical: `/species/${group}` },
   }
 }
 
