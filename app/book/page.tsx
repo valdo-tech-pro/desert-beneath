@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 
 const bookTitle = 'The Desert Beneath: A Complete Guide to Soil Composition for Cactus Cultivation'
@@ -48,14 +49,27 @@ export default function BookPage() {
             <p className="mt-4 text-sm text-sand-200">First Edition · Desert Botanical Press · 2026</p>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur-sm">
-            <p className="text-sm font-bold uppercase tracking-[0.16em] text-sand-100">Inside the book</p>
-            <ul className="mt-5 space-y-4 text-sm leading-6 text-sand-100">
-              <li>• The role of mineral and organic components</li>
-              <li>• Drainage, moisture retention, and aeration</li>
-              <li>• Particle size, pore spaces, and substrate structure</li>
-              <li>• Soil profiles and cultivation guidance for 10 cactus species</li>
-            </ul>
+          <div className="mx-auto w-full max-w-md">
+            <div className="overflow-hidden rounded-2xl border border-white/20 bg-white/10 p-2 shadow-2xl">
+              <Image
+                src="/images/desert-cover.webp"
+                alt="The Desert Beneath: A Complete Guide to Soil Composition for Cactus Cultivation — First Edition book cover"
+                width={520}
+                height={787}
+                priority
+                sizes="(max-width: 768px) 90vw, 420px"
+                className="h-auto w-full rounded-xl"
+              />
+            </div>
+            <div className="mt-5 rounded-2xl border border-white/10 bg-white/10 p-6 backdrop-blur-sm">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-sand-100">Inside the book</p>
+              <ul className="mt-4 space-y-3 text-sm leading-6 text-sand-100">
+                <li>• The role of mineral and organic components</li>
+                <li>• Drainage, moisture retention, and aeration</li>
+                <li>• Particle size, pore spaces, and substrate structure</li>
+                <li>• Soil profiles and cultivation guidance for 10 cactus species</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
