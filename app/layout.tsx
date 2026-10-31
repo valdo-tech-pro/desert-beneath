@@ -4,6 +4,7 @@ import Link from 'next/link'
 import GoogleAnalytics from '@/app/GoogleAnalytics'
 import { siteConfig } from '@/lib/site-config'
 import NewsletterSignup from '@/components/NewsletterSignup'
+import ConsentManager from '@/components/ConsentManager'
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className="bg-[#fbf8f3] text-[#4a3622] min-h-screen flex flex-col font-sans">
         <GoogleAnalytics />
+        <ConsentManager />
         <header className="sticky top-0 z-50 border-b border-[#e6dccf] bg-[#fbf8f3]/95 shadow-sm backdrop-blur-md">
           <div className="mx-auto flex min-h-[72px] max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
             <Link href="/" className="group flex min-w-0 items-center gap-2.5" aria-label={`${siteConfig.name} home`}>
