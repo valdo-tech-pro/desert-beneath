@@ -24,15 +24,18 @@ export default function BookPage() {
       <section className="overflow-hidden rounded-3xl bg-cactus-800 text-white shadow-sm">
         <div className="grid items-center gap-10 px-6 py-12 sm:px-10 md:grid-cols-[1.15fr_.85fr] md:py-16 lg:px-16">
           <div>
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-sand-100">The Desert Beneath · The Book</p>
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-sand-100">Real Plant Species presents · Special Guide</p>
             <h1 className="mt-4 max-w-3xl font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
               The Desert Beneath
             </h1>
             <p className="mt-3 max-w-2xl text-xl font-semibold leading-8 text-sand-100 sm:text-2xl">
               A Complete Guide to Soil Composition for Cactus Cultivation
             </p>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-sand-100">
-              A focused guide to understanding the materials beneath your cactus, how they influence water and air movement, and how substrate structure supports a healthy root environment.
+            <p className="mt-3 text-sm font-semibold uppercase tracking-[0.12em] text-sand-200">
+              10 Species · Soil Profiles · Expert Cultivation Tips
+            </p>
+            <p className="mt-5 max-w-2xl text-lg leading-8 text-sand-100">
+              Minerals, microbes, and the science of thriving in arid soil. Explore the materials beneath your cactus, how they influence water and air movement, and how substrate structure supports a healthy root environment.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a href="https://selar.com/e829s1lr46" target="_blank" rel="noopener noreferrer" className="rounded-xl bg-white px-7 py-4 text-center font-bold text-cactus-800 transition hover:bg-sand-100">
@@ -42,7 +45,7 @@ export default function BookPage() {
                 View on Amazon →
               </a>
             </div>
-            <p className="mt-4 text-sm text-sand-200">Digital edition available through Selar. Amazon listing also available.</p>
+            <p className="mt-4 text-sm text-sand-200">First Edition · Desert Botanical Press · 2026</p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/10 p-8 backdrop-blur-sm">
@@ -51,7 +54,7 @@ export default function BookPage() {
               <li>• The role of mineral and organic components</li>
               <li>• Drainage, moisture retention, and aeration</li>
               <li>• Particle size, pore spaces, and substrate structure</li>
-              <li>• Choosing and evaluating a mix for cactus cultivation</li>
+              <li>• Soil profiles and cultivation guidance for 10 cactus species</li>
             </ul>
           </div>
         </div>
@@ -61,7 +64,7 @@ export default function BookPage() {
         <div className="max-w-2xl">
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-cactus-700">What this book focuses on</p>
           <h2 className="mt-3 font-serif text-3xl font-bold text-cactus-900 sm:text-4xl">The growing medium beneath the plant.</h2>
-          <p className="mt-4 text-lg leading-8 text-stone-600">Cactus soil is more than a list of ingredients. Its physical structure influences how water moves, how long moisture remains, and how much air is available around the roots.</p>
+          <p className="mt-4 text-lg leading-8 text-stone-600">Cactus soil is more than a list of ingredients. Its physical structure influences how water moves, how long moisture remains, and how much air is available around the roots. The book connects these soil principles with species-specific profiles and practical cultivation advice.</p>
         </div>
         <div className="mt-10 grid gap-5 sm:grid-cols-2">
           {benefits.map(([icon, title, text]) => (
@@ -76,11 +79,12 @@ export default function BookPage() {
 
       <section className="rounded-3xl border border-sand-200 bg-sand-50 px-6 py-12 text-center sm:px-10">
         <h2 className="font-serif text-3xl font-bold text-cactus-900">Give your cactus roots a better foundation.</h2>
-        <p className="mx-auto mt-3 max-w-2xl leading-7 text-stone-600">Explore the free soil and cultivation articles on The Desert Beneath, or get the complete book for a deeper look at substrate composition.</p>
+        <p className="mx-auto mt-3 max-w-2xl leading-7 text-stone-600">Explore the free soil and cultivation articles on The Desert Beneath, or get the complete book for a deeper look at substrate composition and species-specific growing conditions.</p>
         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
           <a href="https://selar.com/e829s1lr46" target="_blank" rel="noopener noreferrer" className="rounded-xl bg-cactus-700 px-6 py-3 font-bold text-white transition hover:bg-cactus-800">Get the digital book — $7.99</a>
           <Link href="/soil" className="rounded-xl border border-sand-300 bg-white px-6 py-3 font-bold text-cactus-800 transition hover:bg-sand-50">Explore free soil guides</Link>
         </div>
+        <p className="mt-6 text-xs font-semibold uppercase tracking-[0.16em] text-stone-500">Real Plant Species · Desert Botanical Press · First Edition</p>
       </section>
     </div>
   )
