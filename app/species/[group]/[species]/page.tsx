@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { siteConfig } from '@/lib/site-config'
 
 const species = {
   'mammillaria-hahniana': {
@@ -227,8 +228,11 @@ export async function generateMetadata({ params }: { params: Promise<{ group: st
   const item = species[speciesSlug as SpeciesKey]
   if (!item || item.group !== group) return { title: 'Cactus Species Guide' }
   return {
-    title: `${item.name} Care Guide | The Desert Beneath`,
+    title: `${item.name} Care Guide`,
     description: `${item.name} (${item.common}) identification, habitat, size, flowering, light, watering, soil, problems, and propagation guide.`,
+    alternates: { canonical: `/species/${item.group}/${speciesSlug}` },
+    openGraph: { type: 'article', title: `${item.name} Care Guide`, description: `${item.name} (${item.common}) identification, habitat, size, flowering, light, watering, soil, problems, and propagation guide.`, url: `/species/${item.group}/${speciesSlug}`, siteName: siteConfig.name, images: [{ url: siteConfig.defaultOgImage }] },
+    twitter: { card: 'summary_large_image', title: `${item.name} Care Guide`, description: `${item.name} (${item.common}) identification, habitat, size, flowering, light, watering, soil, problems, and propagation guide.`, images: [siteConfig.defaultOgImage] },
   }
 }
 
