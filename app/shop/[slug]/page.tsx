@@ -38,7 +38,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       offers: {
         '@type': 'Offer',
         url: `${siteConfig.url}/shop/${product.slug}`,
-        price: '7.99',
+        price: Number(product.price.replace(/[^0-9.]/g, '')).toFixed(2),
         priceCurrency: 'USD',
         availability: 'https://schema.org/InStock',
         itemCondition: 'https://schema.org/NewCondition',
