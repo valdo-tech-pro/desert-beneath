@@ -12,6 +12,11 @@ export const metadata: Metadata = {
     url: '/shop',
     type: 'website',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Shop | The Desert Beneath',
+    description: 'Practical digital cactus-care resources to help you grow healthier plants with confidence.',
+  },
 }
 
 const availableProducts = digitalProducts.filter((product) => product.status === 'available')

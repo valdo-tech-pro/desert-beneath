@@ -27,6 +27,26 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   if (!product) notFound()
 
   const available = product.status === 'available' && product.checkoutUrl
+  const productJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.title,
+    description: product.description,
+    category: product.category,
+    brand: { '@type': 'Brand', name: siteConfig.name },
+    ...(available ? {
+      offers: {
+        '@type': 'Offer',
+        url: `${siteConfig.url}/shop/${product.slug}`,
+        price: Number(product.price.replace(/[^0-9.]/g, '')).toFixed(2),
+        priceCurrency: 'USD',
+        availability: 'https://schema.org/InStock',
+        itemCondition: 'https://schema.org/NewCondition',
+      },
+    } : {}),
+  }
+  const productJsonLdScript = JSON.stringify(productJsonLd).replace(/</g, '\\u003c')
+
   const relatedProducts = digitalProducts
     .filter((item) => item.slug !== product.slug)
     .filter((item) => item.status === 'available' || item.slug === 'complete-cactus-care-bundle')
@@ -34,6 +54,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="mx-auto max-w-5xl">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: productJsonLdScript }} />
       <Link href="/shop" className="text-sm font-bold text-[#2c5631] hover:underline">← Back to Shop</Link>
 
       <section className="mt-6 overflow-hidden rounded-3xl border border-[#e5d9ca] bg-white shadow-sm">
