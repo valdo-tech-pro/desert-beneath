@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { digitalProducts, getProduct } from '@/lib/products'
+import { siteConfig } from '@/lib/site-config'
 
 export function generateStaticParams() {
   return digitalProducts.map((product) => ({ slug: product.slug }))
@@ -15,6 +16,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: product.title,
     description: product.description,
     alternates: { canonical: `/shop/${product.slug}` },
+    openGraph: { type: 'website', title: product.title, description: product.description, url: `/shop/${product.slug}`, siteName: siteConfig.name, images: [{ url: siteConfig.defaultOgImage }] },
+    twitter: { card: 'summary_large_image', title: product.title, description: product.description, images: [siteConfig.defaultOgImage] },
   }
 }
 

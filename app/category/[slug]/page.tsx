@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase-server'
 import { CATEGORY_INFO, POST_CATEGORIES, categoryFromSlug } from '@/lib/categories'
 import { Post } from '@/lib/types'
+import { siteConfig } from '@/lib/site-config'
 
 export const revalidate = 0
 
@@ -33,8 +34,11 @@ export async function generateMetadata({ params }: PageProps) {
   const category = categoryFromSlug(slug)
   if (!category) return {}
   return {
-    title: `${category} | The Desert Beneath`,
+    title: category,
     description: CATEGORY_INFO[category].description,
+    alternates: { canonical: `/category/${slug}` },
+    openGraph: { type: 'website', title: category, description: CATEGORY_INFO[category].description, url: `/category/${slug}`, siteName: siteConfig.name, images: [{ url: siteConfig.defaultOgImage }] },
+    twitter: { card: 'summary_large_image', title: category, description: CATEGORY_INFO[category].description, images: [siteConfig.defaultOgImage] },
   }
 }
 

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { siteConfig } from '@/lib/site-config'
 
 const guides = {
   cuttings: {
@@ -71,7 +72,7 @@ export async function generateMetadata({ params }: { params: Promise<{ method: s
   const { method } = await params
   const guide = guides[method as Method]
   if (!guide) return {}
-  return { title: guide.title, description: guide.description }
+  return { title: guide.title, description: guide.description, alternates: { canonical: `/propagation/${method}` }, openGraph: { type: 'article', title: guide.title, description: guide.description, url: `/propagation/${method}`, siteName: siteConfig.name, images: [{ url: siteConfig.defaultOgImage }] }, twitter: { card: 'summary_large_image', title: guide.title, description: guide.description, images: [siteConfig.defaultOgImage] } }
 }
 
 export default async function PropagationGuidePage({ params }: { params: Promise<{ method: string }> }) {
