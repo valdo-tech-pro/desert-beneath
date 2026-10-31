@@ -24,7 +24,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const description = post.meta_description || post.excerpt || stripHtml(post.content).slice(0, 160)
   const url = `${siteConfig.url}/post/${post.slug}`
   const image = post.cover_image || siteConfig.defaultOgImage
-  return { title: post.title, description, alternates: { canonical: url }, openGraph: { type: 'article', title: post.title, description, url, siteName: siteConfig.name, images: [{ url: image }] }, twitter: { card: 'summary_large_image', title: post.title, description, images: [image] } }
+  const absoluteImage = new URL(image, siteConfig.url).toString()
+  return { title: post.title, description, alternates: { canonical: url }, openGraph: { type: 'article', title: post.title, description, url, siteName: siteConfig.name, images: [{ url: absoluteImage }] }, twitter: { card: 'summary_large_image', title: post.title, description, images: [absoluteImage] } }
 }
 
 export default async function PostPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -35,10 +36,13 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const publishedDate = new Date(post.created_at)
   const updatedDate = post.updated_at ? new Date(post.updated_at) : null
   const category = post.category || 'General'
-  const jsonLd = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.title, description, image: post.cover_image || siteConfig.defaultOgImage, datePublished: post.created_at, dateModified: post.updated_at, articleSection: category, author: { '@type': 'Organization', name: siteConfig.name }, publisher: { '@type': 'Organization', name: siteConfig.name }, mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteConfig.url}/post/${post.slug}` } }
+  const image = new URL(post.cover_image || siteConfig.defaultOgImage, siteConfig.url).toString()
+  const modifiedDate = post.updated_at || post.created_at
+  const jsonLd = { '@context': 'https://schema.org', '@type': 'BlogPosting', headline: post.title, description, image: [image], datePublished: post.created_at, dateModified: modifiedDate, articleSection: category, author: { '@type': 'Organization', name: siteConfig.name }, publisher: { '@type': 'Organization', name: siteConfig.name }, mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteConfig.url}/post/${post.slug}` } }
+  const jsonLdScript = JSON.stringify(jsonLd).replace(/</g, '\\u003c')
 
   return <article>
-    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript }} />
     <div className="mx-auto max-w-4xl">
       <Link href="/" className="mb-8 inline-flex text-sm font-semibold text-cactus-700">← Back to all articles</Link>
       <header className="mb-10"><div className="mb-5 flex flex-wrap items-center gap-3 text-xs font-medium text-sand-500"><Link href={`/category/${categorySlug(category)}`} className="rounded-full bg-cactus-50 px-3 py-1 font-bold text-cactus-700 hover:bg-cactus-100">{category}</Link><time dateTime={post.created_at}>{publishedDate.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</time>{updatedDate && updatedDate.getTime() !== publishedDate.getTime() && <span>Updated {updatedDate.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}</span>}</div><h1 className="font-serif text-4xl font-bold leading-tight tracking-tight text-cactus-900 sm:text-5xl lg:text-6xl">{post.title}</h1>{post.excerpt && <p className="mt-5 max-w-3xl text-lg leading-relaxed text-sand-700 sm:text-xl">{post.excerpt}</p>}</header>
