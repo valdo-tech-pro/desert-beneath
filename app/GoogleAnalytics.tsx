@@ -23,7 +23,7 @@ export default function GoogleAnalytics() {
   useEffect(() => {
     const syncConsent = () => {
       const nextAllowed = hasAnalyticsConsent()
-      ;(window as Window & { [key: string]: unknown })[DISABLE_FLAG] = !nextAllowed
+      ;(window as unknown as Record<string, unknown>)[DISABLE_FLAG] = !nextAllowed
       setAllowed(nextAllowed)
     }
 
