@@ -125,9 +125,6 @@ export default function TermsPage() {
           </p>
         </section>
 
-        <p className="mt-10 border-t border-[#e5d9ca] pt-6 text-sm leading-6 text-[#7a6b5d]">
-          These terms are intended as general website terms and are not legal advice. If your business operations or applicable legal requirements change, have the terms reviewed by a qualified legal professional.
-        </p>
       </div>
     </article>
   )
