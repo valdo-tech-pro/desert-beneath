@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import { siteConfig } from '@/lib/site-config'
-import { CONSENT_CHANGE_EVENT, CONSENT_STORAGE_KEY, OPEN_CONSENT_EVENT, type ConsentPreferences } from '@/components/ConsentManager'
+import {
+  CONSENT_CHANGE_EVENT,
+  CONSENT_STORAGE_KEY,
+  OPEN_CONSENT_EVENT,
+  type ConsentPreferences,
+} from '@/components/ConsentManager'
 
 type DisqusPage = { url: string; identifier: string; title: string }
 type DisqusResetConfig = { page: DisqusPage }
@@ -30,8 +35,17 @@ function hasCommentsConsent(): boolean {
   }
 }
 
+function clearDisqus() {
+  document.getElementById(DISQUS_SCRIPT_ID)?.remove()
+  const thread = document.getElementById('disqus_thread')
+  if (thread) thread.replaceChildren()
+  delete window.DISQUS
+  delete window.disqus_config
+}
+
 export default function DisqusComments({ slug, title }: { slug: string; title: string }) {
   const [enabled, setEnabled] = useState(false)
+  const [loadError, setLoadError] = useState(false)
 
   useEffect(() => {
     const syncConsent = () => setEnabled(hasCommentsConsent())
@@ -42,55 +56,104 @@ export default function DisqusComments({ slug, title }: { slug: string; title: s
 
   useEffect(() => {
     if (!enabled) {
-      document.getElementById(DISQUS_SCRIPT_ID)?.remove()
-      const thread = document.getElementById('disqus_thread')
-      thread?.querySelectorAll('iframe').forEach(frame => frame.remove())
-      if (thread) thread.innerHTML = ''
+      clearDisqus()
+      setLoadError(false)
       return
     }
 
-    const pageUrl = `${siteConfig.url}/post/${slug}`
-    window.disqus_config = function () {
+    let cancelled = false
+    setLoadError(false)
+
+    const pageUrl = `${siteConfig.url}/post/${encodeURIComponent(slug)}`
+    const configurePage = function (this: DisqusResetConfig) {
       this.page = { url: pageUrl, identifier: slug, title }
     }
 
+    window.disqus_config = configurePage
+
     if (window.DISQUS?.reset) {
-      window.DISQUS.reset({
-        reload: true,
-        config: function (this: DisqusResetConfig) {
-          this.page = { url: pageUrl, identifier: slug, title }
-        },
-      })
-      return
+      window.DISQUS.reset({ reload: true, config: configurePage })
+      return () => { cancelled = true }
     }
 
-    if (document.getElementById(DISQUS_SCRIPT_ID)) return
+    let script = document.getElementById(DISQUS_SCRIPT_ID) as HTMLScriptElement | null
+    const onLoad = () => {
+      if (cancelled) return
+      if (!window.DISQUS) setLoadError(true)
+    }
+    const onError = () => {
+      if (!cancelled) setLoadError(true)
+    }
 
-    const script = document.createElement('script')
-    script.id = DISQUS_SCRIPT_ID
-    script.src = `https://${DISQUS_SHORTNAME}.disqus.com/embed.js`
-    script.setAttribute('data-timestamp', String(Date.now()))
-    script.async = true
-    document.head.appendChild(script)
+    if (!script) {
+      script = document.createElement('script')
+      script.id = DISQUS_SCRIPT_ID
+      script.src = `https://${DISQUS_SHORTNAME}.disqus.com/embed.js`
+      script.async = true
+      script.setAttribute('data-timestamp', String(Date.now()))
+      script.addEventListener('load', onLoad)
+      script.addEventListener('error', onError)
+      document.head.appendChild(script)
+    } else {
+      script.addEventListener('load', onLoad)
+      script.addEventListener('error', onError)
+      if (window.DISQUS) onLoad()
+    }
+
+    return () => {
+      cancelled = true
+      script?.removeEventListener('load', onLoad)
+      script?.removeEventListener('error', onError)
+    }
   }, [enabled, slug, title])
 
   return (
-    <div className="mt-12 pt-8 border-t border-sand-200">
-      <h2 className="font-serif text-xl font-bold text-cactus-800 mb-6">Comments</h2>
+    <section aria-labelledby="comments-heading" className="mt-14 border-t border-sand-200 pt-10">
+      <div className="mb-6">
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-cactus-700">Join the discussion</p>
+        <h2 id="comments-heading" className="mt-2 font-serif text-2xl font-bold text-cactus-900 sm:text-3xl">
+          Comments
+        </h2>
+        <p className="mt-2 max-w-2xl text-sm leading-6 text-sand-600">
+          Share your experience, ask a question, or add something useful to the conversation.
+        </p>
+      </div>
+
       {enabled ? (
-        <div id="disqus_thread" />
+        <div className="min-h-24 rounded-2xl border border-sand-200 bg-white p-3 shadow-sm sm:p-5">
+          {loadError && (
+            <div role="status" className="rounded-lg bg-sand-50 p-4 text-sm leading-6 text-sand-700">
+              The comment service could not be loaded. Please check your connection or try again later.
+              <button
+                type="button"
+                onClick={() => {
+                  clearDisqus()
+                  setLoadError(false)
+                  setEnabled(false)
+                  window.setTimeout(() => setEnabled(hasCommentsConsent()), 0)
+                }}
+                className="ml-2 font-semibold text-cactus-700 underline underline-offset-2"
+              >
+                Try again
+              </button>
+            </div>
+          )}
+          <div id="disqus_thread" />
+        </div>
       ) : (
-        <div className="rounded-xl border border-sand-200 bg-white p-5">
-          <p className="text-sm leading-6 text-sand-700">Comments are provided by Disqus, a third-party service. Enable the optional Comments setting if you want to load the discussion here.</p>
+        <div className="rounded-2xl border border-sand-200 bg-white p-5 shadow-sm sm:p-6">
+          <p className="text-sm leading-6 text-sand-700">
+            Comments are hosted by Disqus, a third-party service. Enable the optional Comments setting to load the discussion and participate.
+          </p>
           <button
             type="button"
             onClick={() => window.dispatchEvent(new Event(OPEN_CONSENT_EVENT))}
-            className="mt-3 rounded-lg bg-cactus-700 px-4 py-2 text-sm font-semibold text-white hover:bg-cactus-800"
+            className="mt-4 inline-flex min-h-11 items-center rounded-lg bg-cactus-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-cactus-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cactus-700"
           >
-            Review privacy settings
+            Enable comments in privacy settings
           </button>
         </div>
       )}
-    </div>
+    </section>
   )
 }
