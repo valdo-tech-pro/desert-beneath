@@ -77,32 +77,57 @@ export default function DisqusComments({ slug, title }: { slug: string; title: s
     }
 
     let script = document.getElementById(DISQUS_SCRIPT_ID) as HTMLScriptElement | null
-    const onLoad = () => {
-      if (cancelled) return
-      if (!window.DISQUS) setLoadError(true)
-    }
-    const onError = () => {
-      if (!cancelled) setLoadError(true)
+    let pollTimer: number | undefined
+    let timeoutTimer: number | undefined
+
+    const stopTimers = () => {
+      if (pollTimer !== undefined) window.clearInterval(pollTimer)
+      if (timeoutTimer !== undefined) window.clearTimeout(timeoutTimer)
     }
 
-    if (!script) {
+    const onError = () => {
+      if (cancelled) return
+      stopTimers()
+      setLoadError(true)
+    }
+
+    // The embed script may load before Disqus has inserted its iframe.
+    // Wait for the actual thread instead of treating script.onload as success/failure.
+    const waitForThread = () => {
+      const startedAt = Date.now()
+      pollTimer = window.setInterval(() => {
+        if (cancelled) {
+          stopTimers()
+          return
+        }
+        const iframe = document.getElementById('disqus_thread')?.querySelector('iframe')
+        if (iframe) {
+          stopTimers()
+          return
+        }
+        if (Date.now() - startedAt >= 25000) onError()
+      }, 500)
+    }
+
+    if (!script || !window.DISQUS) {
+      // An existing script may have already fired its load event. Reinsert it
+      // when the API is absent so initialization gets a fresh attempt.
+      script?.remove()
       script = document.createElement('script')
       script.id = DISQUS_SCRIPT_ID
       script.src = `https://${DISQUS_SHORTNAME}.disqus.com/embed.js`
       script.async = true
       script.setAttribute('data-timestamp', String(Date.now()))
-      script.addEventListener('load', onLoad)
-      script.addEventListener('error', onError)
+      script.addEventListener('error', onError, { once: true })
       document.head.appendChild(script)
-    } else {
-      script.addEventListener('load', onLoad)
-      script.addEventListener('error', onError)
-      if (window.DISQUS) onLoad()
     }
+
+    waitForThread()
+    timeoutTimer = window.setTimeout(onError, 30000)
 
     return () => {
       cancelled = true
-      script?.removeEventListener('load', onLoad)
+      stopTimers()
       script?.removeEventListener('error', onError)
     }
   }, [enabled, slug, title])
